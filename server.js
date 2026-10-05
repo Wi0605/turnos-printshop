@@ -73,6 +73,10 @@ let modulos = {
 };
 let ultimosTurnos = [];
 
+function formatearHora12() {
+  return new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+}
+
 function emitirEstadoGeneral() {
   io.emit('actualizar_estado', {
     turnos,
@@ -108,7 +112,7 @@ io.on('connection', (socket) => {
       emoji: infoServicio.emoji,
       color: infoServicio.color,
       prioridad: !!infoServicio.prioridad,
-      hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      hora: formatearHora12(),
       creadoPor: datos.creadoPor || 'cliente',
       estado: 'espera'
     };
@@ -153,7 +157,7 @@ io.on('connection', (socket) => {
     if (modulos[moduloId]) {
       ultimosTurnos.unshift({
         ...modulos[moduloId],
-        horaFin: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        horaFin: formatearHora12()
       });
       if (ultimosTurnos.length > 8) ultimosTurnos.pop();
     }
@@ -181,7 +185,7 @@ io.on('connection', (socket) => {
     if (modulos[moduloId]) {
       ultimosTurnos.unshift({
         ...modulos[moduloId],
-        horaFin: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        horaFin: formatearHora12()
       });
       if (ultimosTurnos.length > 8) ultimosTurnos.pop();
     }
@@ -215,7 +219,7 @@ io.on('connection', (socket) => {
     if (modulos[moduloId]) {
       ultimosTurnos.unshift({
         ...modulos[moduloId],
-        horaFin: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        horaFin: formatearHora12()
       });
       if (ultimosTurnos.length > 8) ultimosTurnos.pop();
 

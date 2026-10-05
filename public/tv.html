@@ -343,7 +343,7 @@
     // --- RELOJ Y FECHA EN VIVO ---
     function actualizarReloj() {
       const ahora = new Date();
-      document.getElementById('reloj').innerText = ahora.toLocaleTimeString('es-ES', { hour12: false });
+      document.getElementById('reloj').innerText = ahora.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
       const opciones = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
       document.getElementById('fecha').innerText = ahora.toLocaleDateString('es-ES', opciones);
     }

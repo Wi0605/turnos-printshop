@@ -220,7 +220,7 @@
 
     function actualizarReloj() {
       const ahora = new Date();
-      document.getElementById('reloj-totem').innerText = ahora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('reloj-totem').innerText = ahora.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
       document.getElementById('fecha-totem').innerText = ahora.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' });
     }
     setInterval(actualizarReloj, 1000);

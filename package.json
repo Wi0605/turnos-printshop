@@ -4,10 +4,15 @@
   "description": "Sistema de turnos inteligente para print shop",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "deploy": "node deploy.js"
   },
   "dependencies": {
     "express": "^4.18.2",
     "socket.io": "^4.7.2"
+  },
+  "devDependencies": {
+    "basic-ftp": "^6.2.2",
+    "dotenv": "^18.0.5"
   }
 }

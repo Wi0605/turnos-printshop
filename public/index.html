@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Toma tu Turno - Print Shop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen flex flex-col items-center justify-center p-6">
+
+  <!-- Selección de Servicios -->
+  <div id="pantalla-seleccion" class="w-full max-w-2xl text-center">
+    <h1 class="text-3xl font-extrabold mb-2 text-cyan-400">Bienvenido a la Print Shop</h1>
+    <p class="text-slate-400 mb-8">Selecciona el tipo de servicio que necesitas:</p>
+
+    <div class="grid grid-cols-2 gap-4">
+      <button onclick="pedirTurno('A')" class="bg-slate-800 hover:bg-cyan-600 border border-slate-700 p-6 rounded-2xl text-left transition duration-200">
+        <span class="text-3xl font-bold text-cyan-400 block mb-1">A</span>
+        <span class="text-lg font-semibold block">Copias e Impresiones</span>
+        <span class="text-xs text-slate-400">Trámites rápidos en B/N y color</span>
+      </button>
+
+      <button onclick="pedirTurno('B')" class="bg-slate-800 hover:bg-indigo-600 border border-slate-700 p-6 rounded-2xl text-left transition duration-200">
+        <span class="text-3xl font-bold text-indigo-400 block mb-1">B</span>
+        <span class="text-lg font-semibold block">Diseño / Ajustes</span>
+        <span class="text-xs text-slate-400">Modificación de archivos o vectores</span>
+      </button>
+
+      <button onclick="pedirTurno('C')" class="bg-slate-800 hover:bg-amber-600 border border-slate-700 p-6 rounded-2xl text-left transition duration-200">
+        <span class="text-3xl font-bold text-amber-400 block mb-1">C</span>
+        <span class="text-lg font-semibold block">Gran Formato</span>
+        <span class="text-xs text-slate-400">Pendones, vinilos, planos CAD</span>
+      </button>
+
+      <button onclick="pedirTurno('D')" class="bg-slate-800 hover:bg-emerald-600 border border-slate-700 p-6 rounded-2xl text-left transition duration-200">
+        <span class="text-3xl font-bold text-emerald-400 block mb-1">D</span>
+        <span class="text-lg font-semibold block">Encuadernación</span>
+        <span class="text-xs text-slate-400">Anillados, plastificados, troquelado</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Ticket en Pantalla -->
+  <div id="pantalla-confirmacion" class="hidden text-center bg-slate-800 p-8 rounded-3xl border border-slate-700 shadow-2xl max-w-md w-full">
+    <h2 class="text-slate-400 text-sm font-semibold uppercase tracking-wider mb-2">Tu número de turno es</h2>
+    <div id="codigo-turno" class="text-7xl font-black text-cyan-400 mb-4">A-01</div>
+    <p id="servicio-turno" class="text-slate-300 font-medium mb-6">Copias e Impresiones</p>
+    <p class="text-xs text-slate-400 mb-6">Por favor toma asiento, te llamaremos en la pantalla principal.</p>
+    <button onclick="reiniciar()" class="w-full py-3 bg-cyan-500 hover:bg-cyan-600 rounded-xl font-bold text-slate-900 transition">Entendido</button>
+  </div>
+
+  <script>
+    const socket = io();
+
+    function pedirTurno(categoria) {
+      socket.emit('solicitar_turno', { categoria });
+    }
+
+    let autoResetTimer = null;
+
+    socket.on('turno_creado', (turno) => {
+      document.getElementById('pantalla-seleccion').classList.add('hidden');
+      document.getElementById('pantalla-confirmacion').classList.remove('hidden');
+      document.getElementById('codigo-turno').innerText = turno.codigo;
+      document.getElementById('servicio-turno').innerText = turno.servicio;
+
+      if (autoResetTimer) clearTimeout(autoResetTimer);
+      autoResetTimer = setTimeout(() => {
+        reiniciar();
+      }, 7000);
+    });
+
+    function reiniciar() {
+      if (autoResetTimer) clearTimeout(autoResetTimer);
+      document.getElementById('pantalla-seleccion').classList.remove('hidden');
+      document.getElementById('pantalla-confirmacion').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>

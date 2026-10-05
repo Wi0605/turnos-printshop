@@ -3,67 +3,208 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Toma tu Turno - Print Shop</title>
+  <title>Toma tu Turno - Anillando Cali</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="/socket.io/socket.io.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #192227;
+    }
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    /* Paleta Anillando Cali */
+    .brand-primary { background-color: #3B4E59; }
+    .brand-accent { background-color: #E13032; }
+    .brand-accent-text { color: #E13032; }
+    .brand-peach { background-color: #FFBC7D; }
+    .card-surface { background-color: #243038; border-color: #34444F; }
+  </style>
 </head>
-<body class="bg-slate-900 text-white min-h-screen flex flex-col items-center justify-center p-6">
+<body class="text-white min-h-screen flex flex-col justify-between p-4 sm:p-8 select-none">
 
-  <!-- Selección de Servicios -->
-  <div id="pantalla-seleccion" class="w-full max-w-2xl text-center">
-    <h1 class="text-3xl font-extrabold mb-2 text-cyan-400">Bienvenido a la Print Shop</h1>
-    <p class="text-slate-400 mb-8">Selecciona el tipo de servicio que necesitas:</p>
-
-    <div class="grid grid-cols-2 gap-4">
-      <button onclick="pedirTurno('A')" class="bg-slate-800 hover:bg-cyan-600 border border-slate-700 p-6 rounded-2xl text-left transition duration-200">
-        <span class="text-3xl font-bold text-cyan-400 block mb-1">A</span>
-        <span class="text-lg font-semibold block">Copias e Impresiones</span>
-        <span class="text-xs text-slate-400">Trámites rápidos en B/N y color</span>
-      </button>
-
-      <button onclick="pedirTurno('B')" class="bg-slate-800 hover:bg-indigo-600 border border-slate-700 p-6 rounded-2xl text-left transition duration-200">
-        <span class="text-3xl font-bold text-indigo-400 block mb-1">B</span>
-        <span class="text-lg font-semibold block">Diseño / Ajustes</span>
-        <span class="text-xs text-slate-400">Modificación de archivos o vectores</span>
-      </button>
-
-      <button onclick="pedirTurno('C')" class="bg-slate-800 hover:bg-amber-600 border border-slate-700 p-6 rounded-2xl text-left transition duration-200">
-        <span class="text-3xl font-bold text-amber-400 block mb-1">C</span>
-        <span class="text-lg font-semibold block">Gran Formato</span>
-        <span class="text-xs text-slate-400">Pendones, vinilos, planos CAD</span>
-      </button>
-
-      <button onclick="pedirTurno('D')" class="bg-slate-800 hover:bg-emerald-600 border border-slate-700 p-6 rounded-2xl text-left transition duration-200">
-        <span class="text-3xl font-bold text-emerald-400 block mb-1">D</span>
-        <span class="text-lg font-semibold block">Encuadernación</span>
-        <span class="text-xs text-slate-400">Anillados, plastificados, troquelado</span>
-      </button>
+  <!-- Header Tótem -->
+  <header class="w-full max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between pb-6 border-b border-slate-700/60 gap-4">
+    <div class="flex items-center gap-4">
+      <div class="bg-white/95 px-4 py-2 rounded-2xl shadow-md border border-slate-300/30">
+        <img src="/logo-anillando.png" alt="Anillando Cali" class="h-10 sm:h-12 w-auto object-contain">
+      </div>
+      <div>
+        <h1 class="text-xl sm:text-2xl font-black tracking-tight text-white flex items-center gap-2">
+          ANILLANDO CALI
+          <span class="text-xs px-2.5 py-0.5 rounded-full font-bold bg-[#E13032]/20 text-[#E13032] border border-[#E13032]/40">Tótem</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 font-medium">Centro de Impresión, Gran Formato y Acabados</p>
+      </div>
     </div>
-  </div>
+    <div class="text-right hidden sm:block">
+      <div id="reloj-totem" class="text-2xl font-bold font-mono-code text-[#FFBC7D]">--:--</div>
+      <div class="text-xs text-slate-400 capitalize" id="fecha-totem">--</div>
+    </div>
+  </header>
 
-  <!-- Ticket en Pantalla -->
-  <div id="pantalla-confirmacion" class="hidden text-center bg-slate-800 p-8 rounded-3xl border border-slate-700 shadow-2xl max-w-md w-full">
-    <h2 class="text-slate-400 text-sm font-semibold uppercase tracking-wider mb-2">Tu número de turno es</h2>
-    <div id="codigo-turno" class="text-7xl font-black text-cyan-400 mb-4">A-01</div>
-    <p id="servicio-turno" class="text-slate-300 font-medium mb-6">Copias e Impresiones</p>
-    <p class="text-xs text-slate-400 mb-6">Por favor toma asiento, te llamaremos en la pantalla principal.</p>
-    <button onclick="reiniciar()" class="w-full py-3 bg-cyan-500 hover:bg-cyan-600 rounded-xl font-bold text-slate-900 transition">Entendido</button>
-  </div>
+  <!-- PANTALLA 1: Selección de Servicios -->
+  <main id="pantalla-seleccion" class="w-full max-w-4xl mx-auto my-auto py-6">
+    <div class="text-center mb-8">
+      <h2 class="text-2xl sm:text-4xl font-extrabold text-white mb-3">
+        ¡Bienvenido! Selecciona tu servicio
+      </h2>
+      <p class="text-slate-400 text-sm sm:text-base max-w-xl mx-auto">
+        Toca el botón correspondiente a lo que necesitas y retira tu comprobante de turno.
+      </p>
+    </div>
+
+    <!-- Cuadrícula de 5 Servicios -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+
+      <!-- 1. Impresión Rápida -->
+      <button onclick="pedirTurno('A')" class="card-surface hover:bg-[#3B4E59] border-2 rounded-3xl p-6 text-left transition-all duration-200 transform hover:-translate-y-1 hover:shadow-2xl flex flex-col justify-between group">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-4xl">⚡</span>
+            <span class="text-xs font-black px-2.5 py-1 rounded-lg bg-sky-500/20 text-sky-400 border border-sky-500/30">TURNO A</span>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-1 group-hover:text-sky-300 transition">Impresión Rápida</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">Trámites rápidos en B/N y color, fotocopias y escaneos de documentos.</p>
+        </div>
+        <div class="mt-4 pt-3 border-t border-slate-700/50 flex items-center justify-between text-xs text-sky-400 font-semibold">
+          <span>Atención ágil</span>
+          <span class="text-lg">➔</span>
+        </div>
+      </button>
+
+      <!-- 2. Gran Formato -->
+      <button onclick="pedirTurno('B')" class="card-surface hover:bg-[#3B4E59] border-2 rounded-3xl p-6 text-left transition-all duration-200 transform hover:-translate-y-1 hover:shadow-2xl flex flex-col justify-between group">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-4xl">📐</span>
+            <span class="text-xs font-black px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30">TURNO B</span>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-1 group-hover:text-amber-300 transition">Gran Formato</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">Pendones, vinilos adhesivos, planos arquitectónicos CAD y lonas.</p>
+        </div>
+        <div class="mt-4 pt-3 border-t border-slate-700/50 flex items-center justify-between text-xs text-amber-400 font-semibold">
+          <span>Plotters y planos</span>
+          <span class="text-lg">➔</span>
+        </div>
+      </button>
+
+      <!-- 3. Diseño / Ajustes -->
+      <button onclick="pedirTurno('C')" class="card-surface hover:bg-[#3B4E59] border-2 rounded-3xl p-6 text-left transition-all duration-200 transform hover:-translate-y-1 hover:shadow-2xl flex flex-col justify-between group">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-4xl">🎨</span>
+            <span class="text-xs font-black px-2.5 py-1 rounded-lg bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">TURNO C</span>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-1 group-hover:text-indigo-300 transition">Diseño / Ajustes</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">Modificación de archivos, vectores, retoque y diagramación.</p>
+        </div>
+        <div class="mt-4 pt-3 border-t border-slate-700/50 flex items-center justify-between text-xs text-indigo-400 font-semibold">
+          <span>Un poco más lento</span>
+          <span class="text-lg">➔</span>
+        </div>
+      </button>
+
+      <!-- 4. Atención Prioritaria (Destacado) -->
+      <button onclick="pedirTurno('P')" class="bg-gradient-to-br from-[#2D383E] to-[#40181A] hover:to-[#5E1E22] border-2 border-[#E13032]/60 rounded-3xl p-6 text-left transition-all duration-200 transform hover:-translate-y-1 hover:shadow-2xl shadow-[#E13032]/10 flex flex-col justify-between group">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-4xl">🧓</span>
+            <span class="text-xs font-black px-2.5 py-1 rounded-lg bg-[#E13032] text-white shadow-md">TURNO P • PRIORITARIO</span>
+          </div>
+          <h3 class="text-xl font-black text-white mb-1 group-hover:text-rose-300 transition flex items-center gap-2">
+            Atención Prioritaria
+          </h3>
+          <p class="text-xs text-slate-300 leading-relaxed">Para adultos mayores, mujeres embarazadas o clientes con movilidad reducida.</p>
+        </div>
+        <div class="mt-4 pt-3 border-t border-rose-500/30 flex items-center justify-between text-xs text-rose-300 font-bold">
+          <span>Llamado preferencial</span>
+          <span class="text-lg">➔</span>
+        </div>
+      </button>
+
+      <!-- 5. Terminados -->
+      <button onclick="pedirTurno('T')" class="card-surface hover:bg-[#3B4E59] border-2 rounded-3xl p-6 text-left transition-all duration-200 transform hover:-translate-y-1 hover:shadow-2xl flex flex-col justify-between group sm:col-span-2 lg:col-span-1">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-4xl">📚</span>
+            <span class="text-xs font-black px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">TURNO T</span>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-1 group-hover:text-emerald-300 transition">Terminados</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">Encuadernación, anillados, plastificados, laminados y troquelados.</p>
+        </div>
+        <div class="mt-4 pt-3 border-t border-slate-700/50 flex items-center justify-between text-xs text-emerald-400 font-semibold">
+          <span>Acabados profesionales</span>
+          <span class="text-lg">➔</span>
+        </div>
+      </button>
+
+    </div>
+  </main>
+
+  <!-- PANTALLA 2: Confirmación de Ticket Generado -->
+  <main id="pantalla-confirmacion" class="hidden w-full max-w-md mx-auto my-auto card-surface p-8 sm:p-10 rounded-3xl border-2 border-slate-700 shadow-2xl text-center">
+    <div class="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto mb-4 text-3xl">
+      ✓
+    </div>
+
+    <h2 class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Tu número de turno es</h2>
+    
+    <!-- Código del Turno -->
+    <div id="codigo-turno" class="text-7xl sm:text-8xl font-black font-mono-code text-white mb-2 tracking-tight">
+      --
+    </div>
+
+    <!-- Nombre de Servicio y Emoji -->
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-800/80 border border-slate-700 mb-6">
+      <span id="emoji-turno" class="text-xl">⚡</span>
+      <span id="servicio-turno" class="text-sm font-bold text-[#FFBC7D]">--</span>
+    </div>
+
+    <!-- Instrucciones claras de atención en módulos 1 al 6 -->
+    <div class="bg-[#192227] p-5 rounded-2xl border border-slate-700/80 mb-6 text-left space-y-2">
+      <div class="flex items-center gap-2 text-xs font-bold text-sky-400">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Por favor toma asiento</span>
+      </div>
+      <p class="text-xs text-slate-300 leading-relaxed">
+        Tu turno sonará en la pantalla principal del TV indicándote a cuál de los <strong class="text-white">Módulos del 1 al 6</strong> debes acercarte.
+      </p>
+    </div>
+
+    <!-- Botón Entendido -->
+    <button onclick="reiniciar()" class="w-full py-4 bg-[#E13032] hover:bg-rose-600 rounded-2xl font-black text-white text-base shadow-lg shadow-rose-900/30 transition transform active:scale-95">
+      Entendido
+    </button>
+    <p class="text-[11px] text-slate-500 mt-3">Esta ventana volverá al inicio automáticamente en unos segundos.</p>
+  </main>
+
+  <!-- Footer Tótem -->
+  <footer class="w-full max-w-4xl mx-auto pt-6 border-t border-slate-800/80 text-center text-xs text-slate-500">
+    <p>© Anillando Cali • Sistema Inteligente de Atención al Cliente</p>
+  </footer>
 
   <script>
     const socket = io();
+    let autoResetTimer = null;
 
     function pedirTurno(categoria) {
-      socket.emit('solicitar_turno', { categoria });
+      socket.emit('solicitar_turno', { categoria, creadoPor: 'cliente' });
     }
-
-    let autoResetTimer = null;
 
     socket.on('turno_creado', (turno) => {
       document.getElementById('pantalla-seleccion').classList.add('hidden');
       document.getElementById('pantalla-confirmacion').classList.remove('hidden');
+
       document.getElementById('codigo-turno').innerText = turno.codigo;
       document.getElementById('servicio-turno').innerText = turno.servicio;
+      document.getElementById('emoji-turno').innerText = turno.emoji || '⚡';
 
       if (autoResetTimer) clearTimeout(autoResetTimer);
       autoResetTimer = setTimeout(() => {
@@ -76,6 +217,14 @@
       document.getElementById('pantalla-seleccion').classList.remove('hidden');
       document.getElementById('pantalla-confirmacion').classList.add('hidden');
     }
+
+    function actualizarReloj() {
+      const ahora = new Date();
+      document.getElementById('reloj-totem').innerText = ahora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('fecha-totem').innerText = ahora.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' });
+    }
+    setInterval(actualizarReloj, 1000);
+    actualizarReloj();
   </script>
 </body>
 </html>

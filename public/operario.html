@@ -3,40 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel de Operario - Turnos Print Shop</title>
+  <title>Panel de Operario - Anillando Cali</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="/socket.io/socket.io.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .font-mono-code { font-family: 'JetBrains Mono', monospace; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #F3F5F7;
+    }
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .brand-primary { background-color: #3B4E59; }
+    .brand-accent { background-color: #E13032; }
+    .brand-dark { background-color: #243038; }
   </style>
 </head>
-<body class="bg-slate-100 min-h-screen p-4 sm:p-6 font-sans">
-  <div class="max-w-4xl mx-auto space-y-6">
+<body class="text-slate-800 min-h-screen p-4 sm:p-6">
+  <div class="max-w-6xl mx-auto space-y-6">
 
-    <!-- Header Operario -->
-    <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-      <div>
-        <div class="flex items-center gap-2 mb-1">
-          <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
-          <h1 class="text-2xl font-black text-slate-800 tracking-tight">Panel de Operario</h1>
+    <!-- Header Principal -->
+    <header class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div class="flex items-center gap-4">
+        <div class="bg-slate-50 p-2 rounded-xl border border-slate-200">
+          <img src="/logo-anillando.png" alt="Anillando Cali" class="h-10 w-auto object-contain">
         </div>
-        <p class="text-slate-500 text-xs sm:text-sm">Gestión de turnos y atención al cliente en mostrador</p>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-black text-[#3B4E59] tracking-tight flex items-center gap-2">
+            Panel de Operario
+            <span id="header-modulo-badge" class="px-3 py-0.5 rounded-full text-xs font-black bg-[#E13032] text-white">
+              Módulo 1
+            </span>
+          </h1>
+          <p class="text-xs text-slate-500 font-medium">Gestión inteligente de llamados y atención en mostrador</p>
+        </div>
       </div>
 
-      <!-- Accesos Rápidos -->
-      <div class="flex items-center gap-2">
-        <a href="/tv" target="_blank" class="text-xs font-semibold px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition flex items-center gap-1.5 border border-slate-200">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-cyan-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <!-- Accesos Directos a TV y Tótem -->
+      <div class="flex items-center gap-2 self-stretch md:self-auto justify-end">
+        <a href="/tv" target="_blank" class="text-xs font-bold px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-[#3B4E59] rounded-xl transition flex items-center gap-1.5 border border-slate-200">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
           </svg>
           Abrir TV
         </a>
-        <a href="/" target="_blank" class="text-xs font-semibold px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition flex items-center gap-1.5 border border-slate-200">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <a href="/" target="_blank" class="text-xs font-bold px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-[#3B4E59] rounded-xl transition flex items-center gap-1.5 border border-slate-200">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#E13032]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
           </svg>
           Abrir Tótem
@@ -44,59 +59,174 @@
       </div>
     </header>
 
-    <!-- Controles y Estado -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-      <!-- Tarjeta Turno Actual -->
-      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+    <!-- SELECTOR DE MÓDULO (1 al 6) -->
+    <section class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
         <div>
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Atendiendo Ahora</h2>
-            <span id="badge-atendiendo" class="hidden text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">En curso</span>
-          </div>
-
-          <div id="turno-actual-box" class="text-center py-6">
-            <p class="text-slate-400 text-sm">Ningún turno en atención</p>
-          </div>
+          <h2 class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Selecciona tu Módulo de Atención</h2>
+          <p class="text-xs text-slate-500">Los turnos que llames se anunciarán en el TV hacia este puesto:</p>
         </div>
-
-        <!-- Botones de Acción de Turno -->
-        <div class="space-y-2 pt-4 border-t border-slate-100">
-          <button id="btn-rellamar" onclick="rellamarTurno()" class="hidden w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 px-4 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
-            Re-llamar en TV
-          </button>
-          <button id="btn-completar" onclick="completarTurno()" class="hidden w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-            Finalizar Atención
-          </button>
-          <button onclick="llamarSiguiente()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2 text-base">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
-            </svg>
-            Llamar Siguiente
-          </button>
+        <div class="text-xs font-bold text-[#3B4E59] bg-slate-100 px-3 py-1 rounded-lg border border-slate-200">
+          Puesto Actual: <span id="lbl-modulo-actual" class="text-[#E13032] font-black">Módulo 1</span>
         </div>
       </div>
 
-      <!-- Tarjeta Cola de Espera -->
-      <div class="md:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
-        <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
+      <!-- Botones Módulo 1 al 6 -->
+      <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-3" id="selector-modulos">
+        <button onclick="seleccionarModulo(1)" id="btn-mod-1" class="btn-modulo py-3 px-2 rounded-xl font-black text-sm transition border-2 text-center">
+          Módulo 1
+        </button>
+        <button onclick="seleccionarModulo(2)" id="btn-mod-2" class="btn-modulo py-3 px-2 rounded-xl font-black text-sm transition border-2 text-center">
+          Módulo 2
+        </button>
+        <button onclick="seleccionarModulo(3)" id="btn-mod-3" class="btn-modulo py-3 px-2 rounded-xl font-black text-sm transition border-2 text-center">
+          Módulo 3
+        </button>
+        <button onclick="seleccionarModulo(4)" id="btn-mod-4" class="btn-modulo py-3 px-2 rounded-xl font-black text-sm transition border-2 text-center">
+          Módulo 4
+        </button>
+        <button onclick="seleccionarModulo(5)" id="btn-mod-5" class="btn-modulo py-3 px-2 rounded-xl font-black text-sm transition border-2 text-center">
+          Módulo 5
+        </button>
+        <button onclick="seleccionarModulo(6)" id="btn-mod-6" class="btn-modulo py-3 px-2 rounded-xl font-black text-sm transition border-2 text-center">
+          Módulo 6
+        </button>
+      </div>
+    </section>
+
+    <!-- CUERPO PRINCIPAL: 2 Columnas -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- COLUMNA IZQUIERDA: Mi Módulo y Acciones de Llamada (5 cols) -->
+      <div class="lg:col-span-5 space-y-6">
+
+        <!-- Tarjeta Turno en Mi Módulo -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border-2 border-slate-200 flex flex-col justify-between">
           <div>
-            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Turnos en Espera</h2>
-            <p class="text-xs text-slate-400">Orden de llegada en tiempo real</p>
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+                <h3 class="text-xs font-black uppercase tracking-wider text-slate-500" id="titulo-mi-modulo">
+                  Atendiendo en Módulo 1
+                </h3>
+              </div>
+              <span id="badge-estado-modulo" class="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                Libre
+              </span>
+            </div>
+
+            <!-- Contenido del Turno en Atención -->
+            <div id="box-turno-modulo" class="text-center py-6">
+              <div class="w-14 h-14 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3 text-2xl">
+                ☕
+              </div>
+              <p class="text-slate-400 text-sm font-semibold">Módulo disponible</p>
+              <p class="text-slate-400 text-xs mt-1">Presiona "Llamar Siguiente" o escoge un turno de la lista</p>
+            </div>
           </div>
-          <span id="contador-espera" class="bg-indigo-50 text-indigo-700 font-extrabold px-3 py-1 rounded-full text-xs border border-indigo-100">
-            0 en cola
-          </span>
+
+          <!-- Botones de Acción de Turno -->
+          <div class="space-y-2.5 pt-4 border-t border-slate-100">
+            <!-- Botón Re-llamar -->
+            <button id="btn-rellamar" onclick="rellamarTurno()" class="hidden w-full bg-[#FFBC7D] hover:bg-amber-400 text-slate-900 font-extrabold py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+              🔔 Re-llamar en TV
+            </button>
+
+            <!-- Botón Finalizar -->
+            <button id="btn-completar" onclick="completarTurno()" class="hidden w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 px-4 rounded-xl shadow transition flex items-center justify-center gap-2 text-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+              </svg>
+              Finalizar Atención
+            </button>
+
+            <!-- Botón Llamar Siguiente General -->
+            <button onclick="llamarSiguiente()" class="w-full bg-[#E13032] hover:bg-rose-700 text-white font-black py-3.5 px-4 rounded-xl shadow-lg shadow-rose-900/20 transition flex items-center justify-center gap-2 text-base transform active:scale-98">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+              </svg>
+              Llamar Siguiente
+            </button>
+          </div>
         </div>
 
-        <div id="lista-espera" class="space-y-2.5 flex-1 overflow-y-auto max-h-[420px] pr-1">
-          <p class="text-slate-400 text-sm py-8 text-center">No hay clientes esperando</p>
+        <!-- Llamada Rápida por Categoría Específica -->
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+          <h3 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-3">Llamar siguiente de categoría:</h3>
+          <div class="grid grid-cols-2 gap-2 text-xs font-bold">
+            <button onclick="llamarSiguienteCategoria('A')" class="p-2.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-200 transition text-left flex items-center gap-2">
+              <span>⚡</span> <span>Impresión</span>
+            </button>
+            <button onclick="llamarSiguienteCategoria('B')" class="p-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 transition text-left flex items-center gap-2">
+              <span>📐</span> <span>Gran Formato</span>
+            </button>
+            <button onclick="llamarSiguienteCategoria('C')" class="p-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 transition text-left flex items-center gap-2">
+              <span>🎨</span> <span>Diseño</span>
+            </button>
+            <button onclick="llamarSiguienteCategoria('P')" class="p-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 transition text-left flex items-center gap-2">
+              <span>🧓</span> <span>Prioritaria</span>
+            </button>
+            <button onclick="llamarSiguienteCategoria('T')" class="p-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition text-left flex items-center gap-2 col-span-2">
+              <span>📚</span> <span>Terminados (Encuadernación, laminado)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Generar Turno Manual (Por si llega directo al operario) -->
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-xs font-black uppercase tracking-wider text-slate-400">Crear Turno Manual</h3>
+            <span class="text-[10px] text-slate-400 font-medium">Cliente en mostrador</span>
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <button onclick="crearTurnoOperario('A')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
+              ⚡ A (Impresión)
+            </button>
+            <button onclick="crearTurnoOperario('B')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
+              📐 B (Formato)
+            </button>
+            <button onclick="crearTurnoOperario('C')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
+              🎨 C (Diseño)
+            </button>
+            <button onclick="crearTurnoOperario('P')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-800 transition">
+              🧓 P (Prioritario)
+            </button>
+            <button onclick="crearTurnoOperario('T')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
+              📚 T (Terminados)
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- COLUMNA DERECHA: Lista de Turnos en Espera (7 cols) -->
+      <div class="lg:col-span-7 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 gap-3 mb-4">
+          <div>
+            <h2 class="text-base font-black text-[#3B4E59] flex items-center gap-2">
+              <span>📋 Cola de Clientes en Espera</span>
+              <span id="badge-total-cola" class="bg-[#3B4E59] text-white text-xs px-2.5 py-0.5 rounded-full font-bold">0</span>
+            </h2>
+            <p class="text-xs text-slate-400">Haz clic en <strong>"Atender"</strong> en cualquier turno para llamarlo a tu módulo:</p>
+          </div>
+
+          <!-- Filtro rápido por categoría -->
+          <select id="filtro-categoria" onchange="renderizarCola()" class="text-xs font-bold bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 focus:outline-none focus:border-[#E13032]">
+            <option value="todas">Todas las categorías</option>
+            <option value="P">🧓 Solo Prioritarios</option>
+            <option value="A">⚡ Impresión Rápida</option>
+            <option value="B">📐 Gran Formato</option>
+            <option value="C">🎨 Diseño / Ajustes</option>
+            <option value="T">📚 Terminados</option>
+          </select>
+        </div>
+
+        <!-- Lista de Tarjetas de Turnos -->
+        <div id="lista-turnos" class="space-y-2.5 flex-1 overflow-y-auto max-h-[580px] pr-1">
+          <p class="text-slate-400 text-sm py-12 text-center">No hay clientes en espera</p>
         </div>
       </div>
 
@@ -106,74 +236,168 @@
   <script>
     const socket = io();
 
-    const CATEGORIA_BADGES = {
-      A: 'bg-cyan-100 text-cyan-800 border-cyan-200',
-      B: 'bg-indigo-100 text-indigo-800 border-indigo-200',
-      C: 'bg-amber-100 text-amber-800 border-amber-200',
-      D: 'bg-emerald-100 text-emerald-800 border-emerald-200'
-    };
+    // Módulo actual seleccionado por el operario (1 al 6)
+    let moduloActual = parseInt(localStorage.getItem('anillando_modulo_operario'), 10) || 1;
+    let turnosCache = [];
+    let modulosCache = {};
 
-    socket.on('actualizar_estado', ({ turnos, turnoActual }) => {
-      const boxActual = document.getElementById('turno-actual-box');
-      const badgeAtendiendo = document.getElementById('badge-atendiendo');
+    function seleccionarModulo(num) {
+      moduloActual = num;
+      localStorage.setItem('anillando_modulo_operario', num);
+      actualizarEstilosModulo();
+      actualizarVistaModulo();
+    }
+
+    function actualizarEstilosModulo() {
+      document.getElementById('lbl-modulo-actual').innerText = `Módulo ${moduloActual}`;
+      document.getElementById('header-modulo-badge').innerText = `Módulo ${moduloActual}`;
+      document.getElementById('titulo-mi-modulo').innerText = `Atendiendo en Módulo ${moduloActual}`;
+
+      for (let i = 1; i <= 6; i++) {
+        const btn = document.getElementById(`btn-mod-${i}`);
+        if (i === moduloActual) {
+          btn.className = 'btn-modulo py-3 px-2 rounded-xl font-black text-sm transition border-2 text-center bg-[#3B4E59] text-white border-[#3B4E59] shadow-md shadow-slate-400/30';
+        } else {
+          btn.className = 'btn-modulo py-3 px-2 rounded-xl font-black text-sm transition border-2 text-center bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200';
+        }
+      }
+    }
+
+    // Actualizar caja del turno activo en MI módulo
+    function actualizarVistaModulo() {
+      const box = document.getElementById('box-turno-modulo');
+      const badgeEstado = document.getElementById('badge-estado-modulo');
       const btnRellamar = document.getElementById('btn-rellamar');
       const btnCompletar = document.getElementById('btn-completar');
 
-      if (turnoActual) {
-        badgeAtendiendo.classList.remove('hidden');
+      const turnoEnMiModulo = modulosCache[moduloActual];
+
+      if (turnoEnMiModulo) {
+        badgeEstado.innerText = 'En Atención';
+        badgeEstado.className = 'text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200';
         btnRellamar.classList.remove('hidden');
         btnCompletar.classList.remove('hidden');
 
-        boxActual.innerHTML = `
-          <div class="text-6xl font-black text-indigo-600 font-mono-code mb-2">${turnoActual.codigo}</div>
-          <div class="font-bold text-slate-800 text-lg">${turnoActual.servicio}</div>
-          <div class="text-xs text-slate-400 mt-2 font-mono">Llegada: ${turnoActual.hora}</div>
+        box.innerHTML = `
+          <div class="text-6xl font-black text-[#3B4E59] font-mono-code mb-2 tracking-tight">${turnoEnMiModulo.codigo}</div>
+          <div class="font-extrabold text-slate-800 text-lg flex items-center justify-center gap-2">
+            <span>${turnoEnMiModulo.emoji || '⚡'}</span>
+            <span>${turnoEnMiModulo.servicio}</span>
+          </div>
+          <div class="text-xs text-slate-400 mt-2 font-mono">Llegada: ${turnoEnMiModulo.hora}</div>
+          ${turnoEnMiModulo.prioridad ? '<span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[10px] font-black bg-rose-100 text-rose-800">ATENCIÓN PRIORITARIA</span>' : ''}
         `;
       } else {
-        badgeAtendiendo.classList.add('hidden');
+        badgeEstado.innerText = 'Libre';
+        badgeEstado.className = 'text-[10px] font-black px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600';
         btnRellamar.classList.add('hidden');
         btnCompletar.classList.add('hidden');
-        boxActual.innerHTML = `<p class="text-slate-400 text-sm py-6">Ningún turno en atención</p>`;
+
+        box.innerHTML = `
+          <div class="w-14 h-14 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3 text-2xl">
+            ☕
+          </div>
+          <p class="text-slate-500 text-sm font-bold">Módulo ${moduloActual} Disponible</p>
+          <p class="text-slate-400 text-xs mt-1">Presiona "Llamar Siguiente" o elige un turno</p>
+        `;
+      }
+    }
+
+    // Renderizar lista de turnos en espera con filtro
+    function renderizarCola() {
+      const lista = document.getElementById('lista-turnos');
+      const badgeTotal = document.getElementById('badge-total-cola');
+      const filtro = document.getElementById('filtro-categoria').value;
+
+      badgeTotal.innerText = `${turnosCache.length} en espera`;
+
+      let turnosFiltrados = turnosCache;
+      if (filtro !== 'todas') {
+        turnosFiltrados = turnosCache.filter(t => t.categoria === filtro);
       }
 
-      const lista = document.getElementById('lista-espera');
-      document.getElementById('contador-espera').innerText = `${turnos.length} en cola`;
-      lista.innerHTML = '';
-
-      if (turnos.length === 0) {
-        lista.innerHTML = `<p class="text-slate-400 text-sm py-8 text-center">No hay clientes esperando</p>`;
+      if (turnosFiltrados.length === 0) {
+        lista.innerHTML = `
+          <div class="text-center py-12 text-slate-400 text-sm">
+            ${filtro === 'todas' ? 'No hay clientes esperando' : 'No hay clientes en esta categoría'}
+          </div>
+        `;
         return;
       }
 
-      turnos.forEach((t, i) => {
-        const cat = t.codigo.charAt(0);
-        const badgeColor = CATEGORIA_BADGES[cat] || 'bg-slate-100 text-slate-800 border-slate-200';
+      lista.innerHTML = turnosFiltrados.map((t, idx) => {
+        const esPrioritario = t.prioridad;
+        const cardBg = esPrioritario ? 'bg-rose-50/80 border-rose-200' : 'bg-slate-50 hover:bg-slate-100 border-slate-200/80';
+        const badgeCodigo = esPrioritario ? 'bg-[#E13032] text-white' : 'bg-[#3B4E59] text-white';
 
-        const item = document.createElement('div');
-        item.className = 'flex justify-between items-center p-3.5 bg-slate-50 hover:bg-slate-100 rounded-xl border border-slate-200/70 transition';
-        item.innerHTML = `
-          <div class="flex items-center gap-3">
-            <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-600 font-bold text-xs flex items-center justify-center">${i + 1}</span>
-            <span class="px-2 py-0.5 rounded-md font-mono-code font-bold text-sm border ${badgeColor}">${t.codigo}</span>
-            <span class="text-sm font-semibold text-slate-700">${t.servicio}</span>
+        return `
+          <div class="flex items-center justify-between p-3.5 rounded-xl border ${cardBg} transition">
+            <div class="flex items-center gap-3">
+              <span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 font-black text-xs flex items-center justify-center shrink-0">
+                ${idx + 1}
+              </span>
+              <span class="px-2.5 py-1 rounded-lg font-mono-code font-black text-sm ${badgeCodigo} shadow-sm">
+                ${t.codigo}
+              </span>
+              <div>
+                <div class="text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                  <span>${t.emoji || '⚡'}</span>
+                  <span>${t.servicio}</span>
+                  ${esPrioritario ? '<span class="text-[10px] font-black px-2 py-0.5 rounded bg-rose-200 text-rose-800">PRIORITARIO</span>' : ''}
+                </div>
+                <div class="text-xs text-slate-400 font-mono">Esperando desde las ${t.hora}</div>
+              </div>
+            </div>
+
+            <!-- Botón para que el operario atienda este turno específico -->
+            <button onclick="llamarTurnoEspecifico(${t.id})" class="px-3.5 py-2 rounded-xl text-xs font-black bg-white hover:bg-[#3B4E59] text-[#3B4E59] hover:text-white border border-slate-300 shadow-sm transition flex items-center gap-1">
+              <span>Atender</span>
+              <span>➔</span>
+            </button>
           </div>
-          <span class="text-xs text-slate-400 font-mono">${t.hora}</span>
         `;
-        lista.appendChild(item);
-      });
+      }).join('');
+    }
+
+    // Socket Eventos
+    socket.on('actualizar_estado', ({ turnos, modulos }) => {
+      turnosCache = turnos || [];
+      modulosCache = modulos || {};
+      actualizarVistaModulo();
+      renderizarCola();
     });
 
+    socket.on('sin_turnos_categoria', ({ categoria }) => {
+      alert(`No hay turnos en espera para la categoría seleccionada.`);
+    });
+
+    // Acciones del Operario
     function llamarSiguiente() {
-      socket.emit('llamar_siguiente');
+      socket.emit('llamar_siguiente', { modulo: moduloActual });
+    }
+
+    function llamarSiguienteCategoria(cat) {
+      socket.emit('llamar_siguiente', { modulo: moduloActual, categoria: cat });
+    }
+
+    function llamarTurnoEspecifico(id) {
+      socket.emit('llamar_especifico', { id, modulo: moduloActual });
     }
 
     function rellamarTurno() {
-      socket.emit('rellamar_turno');
+      socket.emit('rellamar_turno', { modulo: moduloActual });
     }
 
     function completarTurno() {
-      socket.emit('completar_turno');
+      socket.emit('completar_turno', { modulo: moduloActual });
     }
+
+    function crearTurnoOperario(categoria) {
+      socket.emit('solicitar_turno', { categoria, creadoPor: 'operario' });
+    }
+
+    // Inicialización
+    actualizarEstilosModulo();
   </script>
 </body>
 </html>

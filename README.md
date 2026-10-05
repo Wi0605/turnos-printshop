@@ -1,55 +1,82 @@
-# 🖨️ Print Shop - Sistema de Turnos Inteligente
+# 🖨️ Anillando Cali - Sistema Inteligente de Turnos
 
-Sistema web en tiempo real para gestión y llamada de turnos en locales de impresión digital, copiado, diseño y acabados. Construido con **Node.js**, **Express**, **Socket.IO** y **Tailwind CSS**.
+Sistema web en tiempo real para gestión, llamada y visualización de turnos en locales de impresión digital, copiado, diseño, gran formato y terminados. Desarrollado con **Node.js**, **Express**, **Socket.IO** y **Tailwind CSS**, con la identidad visual corporativa de [Anillando Cali](https://anillandocali.com/).
 
 ---
 
-## 🚀 Características
+## 🚀 Características Principales
 
-- **Tótem de Autoservicio (`/`)**: Pantalla táctil o de kiosko donde los clientes eligen la categoría de su trámite y obtienen su turno (A, B, C, D).
-- **Pantalla de TV (`/tv`)**: Vista optimizada para televisores y monitores de sala (16:9) con llamada en tamaño gigante, animación brillante de atención, timbre polifónico nativo (Web Audio API), síntesis de voz en español, cola de espera y reloj en vivo.
-- **Panel de Operario (`/operario`)**: Interfaz para el personal con opciones de llamar siguiente, re-llamar al TV y finalizar atención.
-- **Sincronización en Tiempo Real**: WebSocket bidireccional mediante Socket.IO sin demoras ni recargas.
-- **Listo para Docker**: Contenedorizado con Docker y Docker Compose para despliegue inmediato.
+- **🏢 Soporte Multi-Módulo (1 al 6)**: Permite a los operarios seleccionar el puesto en el que se encuentran (del 1 al 6). El TV anuncia claramente a qué módulo debe acercarse el cliente.
+- **🖥️ Pantalla de TV en Sala (`/tv`)**:
+  - Diseño widescreen optimizado para monitores y televisores (16:9).
+  - Número de turno en tamaño gigante con indicador grande del módulo de atención.
+  - Alerta visual parpadeante y animación luminosa de llamado.
+  - Timbre nativo tipo aeropuerto/banco (Web Audio API sin dependencias externas).
+  - Anuncio por voz en español con Web Speech API (*"Turno A 1, pasar al Módulo 3"*).
+  - Tablero en vivo con el estado de los **6 módulos**.
+  - Lista de turnos en espera e historial de últimos llamados.
+- **👥 Tótem de Clientes (`/`)**:
+  - Pantalla táctil para que los clientes seleccionen su servicio y reciban su código.
+  - Indicador preferencial para adultos mayores y prioridad.
+  - Retorno automático a pantalla de inicio tras 7 segundos.
+- **💼 Panel de Operario (`/operario`)**:
+  - Selector activo de módulo (1 al 6, guardado en el navegador).
+  - Posibilidad de **atender cualquier turno específico** de la fila con un clic.
+  - Botón de **Llamar siguiente general** (con prioridad automática para adultos mayores).
+  - Botón de **Llamar siguiente por categoría**.
+  - Botón **Re-llamar en TV** (hace sonar y parpadear la pantalla nuevamente).
+  - Creación manual de turnos en mostrador.
+- **⚡ Tiempo Real**: Comunicación bidireccional instantánea con WebSockets (Socket.IO).
 
 ---
 
 ## 📋 Categorías de Servicio
 
-| Prefijo | Servicio | Color |
-| :--- | :--- | :--- |
-| **A** | Copias e Impresiones Rápidas | Cyan |
-| **B** | Diseño / Modificaciones / Vectores | Índigo |
-| **C** | Gran Formato / Planos CAD / Vinilos | Ámbar |
-| **D** | Encuadernación / Plastificados / Acabados | Esmeralda |
+| Prefijo | Emoji | Servicio | Descripción | Prioridad |
+| :---: | :---: | :--- | :--- | :---: |
+| **A** | ⚡ | **Impresión Rápida** | Trámites rápidos en B/N y color, copias, escaneos | Estándar |
+| **B** | 📐 | **Gran Formato** | Pendones, vinilos, planos CAD, lonas | Estándar |
+| **C** | 🎨 | **Diseño / Ajustes** | Modificación de archivos o vectores (un poco más lento) | Estándar |
+| **P** | 🧓 | **Atención Prioritaria** | Clientes mayores de edad, embarazo o movilidad reducida | **ALTA** |
+| **T** | 📚 | **Terminados** | Encuadernación, anillados, plastificado y acabados | Estándar |
+
+---
+
+## 🎨 Identidad Visual (Anillando Cali)
+
+Inspirado en la paleta oficial de [anillandocali.com](https://anillandocali.com/):
+- **Azul Petróleo / Slate Teal**: `#3B4E59` (Color corporativo principal)
+- **Rojo Vibrante**: `#E13032` (Acentos de llamado y prioridad)
+- **Melocotón / Dorado Cálido**: `#FFBC7D` (Contraste y destaques)
+- **Fondo Oscuro Pizarra**: `#192227` / `#212C33` (Modo TV de alto contraste)
 
 ---
 
 ## 🛠️ Instalación y Uso Local
 
 ### Requisitos
-- Node.js (v18+) y npm
+- Node.js (v18 o superior) y npm
 
 ### Pasos
 ```bash
 # 1. Instalar dependencias
 npm install
 
-# 2. Iniciar servidor
+# 2. Iniciar el servidor
 npm start
 ```
 
-El servidor iniciará en: **`http://localhost:3000`**
+El sistema estará disponible en: **`http://localhost:3000`**
 
 ---
 
 ## 🐳 Uso con Docker
 
 ```bash
-# Construir y levantar contenedor
+# Construir y arrancar contenedor
 docker-compose up -d --build
 
-# Ver logs
+# Ver logs en vivo
 docker-compose logs -f
 ```
 

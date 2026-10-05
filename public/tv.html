@@ -437,6 +437,15 @@
       contenedor.innerHTML = html;
     }
 
+    function formatearHoraLocal(t) {
+      if (!t) return '--';
+      const timestamp = t.creadoEn || (typeof t.id === 'number' && t.id > 1700000000000 ? t.id : null);
+      if (timestamp) {
+        return new Date(timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+      }
+      return t.hora || '--';
+    }
+
     function renderizarColaEspera(turnos) {
       const contenedor = document.getElementById('lista-proximos');
       const badgeTotal = document.getElementById('badge-total-espera');
@@ -466,7 +475,7 @@
               </div>
             </div>
             <span class="text-xs font-mono text-slate-400 bg-slate-900/80 px-2.5 py-1 rounded-xl border border-slate-700/60">
-              ${t.hora}
+              ${formatearHoraLocal(t)}
             </span>
           </div>
         `;
@@ -495,7 +504,7 @@
           <div class="p-2.5 rounded-2xl bg-slate-800/50 border border-slate-700/50 text-center">
             <div class="text-sm font-black font-mono-code text-[#FFBC7D]">${t.codigo}</div>
             <div class="text-[10px] text-slate-300 font-bold">Módulo ${t.modulo || 1}</div>
-            <div class="text-[9px] text-slate-500 font-mono mt-0.5">${t.horaFin || t.hora}</div>
+            <div class="text-[9px] text-slate-500 font-mono mt-0.5">${t.horaFin || formatearHoraLocal(t)}</div>
           </div>
         `;
       }).join('');

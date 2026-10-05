@@ -270,6 +270,37 @@
       const btnRellamar = document.getElementById('btn-rellamar');
       const btnCompletar = document.getElementById('btn-completar');
 
+    function formatearHoraLocal(t) {
+      if (!t) return '--';
+      const timestamp = t.creadoEn || (typeof t.id === 'number' && t.id > 1700000000000 ? t.id : null);
+      if (timestamp) {
+        return new Date(timestamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+      }
+      return t.hora || '--';
+    }
+
+    function obtenerTextoEspera(t) {
+      const horaStr = formatearHoraLocal(t);
+      const timestamp = t.creadoEn || (typeof t.id === 'number' && t.id > 1700000000000 ? t.id : null);
+      if (!timestamp) return `Esperando desde las ${horaStr}`;
+
+      const minutos = Math.floor((Date.now() - timestamp) / 60000);
+      if (minutos <= 0) {
+        return `Esperando desde las ${horaStr} (hace un momento)`;
+      } else if (minutos === 1) {
+        return `Esperando desde las ${horaStr} (hace 1 min)`;
+      } else {
+        return `Esperando desde las ${horaStr} (hace ${minutos} min)`;
+      }
+    }
+
+    // Actualizar caja del turno activo en MI módulo
+    function actualizarVistaModulo() {
+      const box = document.getElementById('box-turno-modulo');
+      const badgeEstado = document.getElementById('badge-estado-modulo');
+      const btnRellamar = document.getElementById('btn-rellamar');
+      const btnCompletar = document.getElementById('btn-completar');
+
       const turnoEnMiModulo = modulosCache[moduloActual];
 
       if (turnoEnMiModulo) {
@@ -284,7 +315,7 @@
             <span>${turnoEnMiModulo.emoji || '⚡'}</span>
             <span>${turnoEnMiModulo.servicio}</span>
           </div>
-          <div class="text-xs text-slate-400 mt-2 font-mono">Llegada: ${turnoEnMiModulo.hora}</div>
+          <div class="text-xs text-slate-400 mt-2 font-mono">Llegada: ${formatearHoraLocal(turnoEnMiModulo)}</div>
           ${turnoEnMiModulo.prioridad ? '<span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[10px] font-black bg-rose-100 text-rose-800">ATENCIÓN PRIORITARIA</span>' : ''}
         `;
       } else {
@@ -345,7 +376,7 @@
                   <span>${t.servicio}</span>
                   ${esPrioritario ? '<span class="text-[10px] font-black px-2 py-0.5 rounded bg-rose-200 text-rose-800">PRIORITARIO</span>' : ''}
                 </div>
-                <div class="text-xs text-slate-400 font-mono">Esperando desde las ${t.hora}</div>
+                <div class="text-xs text-slate-400 font-mono">${obtenerTextoEspera(t)}</div>
               </div>
             </div>
 
@@ -398,6 +429,7 @@
 
     // Inicialización
     actualizarEstilosModulo();
+    setInterval(renderizarCola, 30000);
   </script>
 </body>
 </html>

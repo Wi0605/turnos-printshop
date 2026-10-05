@@ -73,8 +73,23 @@ let modulos = {
 };
 let ultimosTurnos = [];
 
-function formatearHora12() {
-  return new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+const TIMEZONE = process.env.TZ || 'America/Bogota';
+
+function formatearHora12(date = new Date()) {
+  try {
+    return date.toLocaleTimeString('en-US', {
+      timeZone: TIMEZONE,
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+  } catch (e) {
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+  }
 }
 
 function emitirEstadoGeneral() {
@@ -103,16 +118,18 @@ io.on('connection', (socket) => {
     const numero = contadores[prefijo]++;
     const codigo = `${prefijo}-${String(numero).padStart(2, '0')}`;
     const infoServicio = SERVICIOS[prefijo];
+    const timestamp = Date.now();
 
     const nuevoTurno = {
-      id: Date.now() + Math.floor(Math.random() * 1000),
+      id: timestamp + Math.floor(Math.random() * 1000),
       codigo,
       categoria: prefijo,
       servicio: infoServicio.nombre,
       emoji: infoServicio.emoji,
       color: infoServicio.color,
       prioridad: !!infoServicio.prioridad,
-      hora: formatearHora12(),
+      creadoEn: timestamp,
+      hora: formatearHora12(new Date(timestamp)),
       creadoPor: datos.creadoPor || 'cliente',
       estado: 'espera'
     };

@@ -17,6 +17,15 @@ app.get('/totem', (req, res) => res.sendFile(path.join(__dirname, 'public', 'ind
 
 // Catálogo de Servicios Anillando Cali
 const SERVICIOS = {
+  P: {
+    id: 'P',
+    nombre: 'Atención Prioritaria',
+    emoji: '🧓',
+    desc: 'Adultos mayores, embarazo o movilidad reducida',
+    color: '#e13032',
+    prioridad: true,
+    tiempoEstimado: 'Prioritario'
+  },
   A: {
     id: 'A',
     nombre: 'Impresión Rápida',
@@ -28,40 +37,47 @@ const SERVICIOS = {
   B: {
     id: 'B',
     nombre: 'Gran Formato',
-    emoji: '📐',
-    desc: 'Pendones, vinilos, planos CAD, lonas',
+    emoji: '🖼️',
+    desc: 'Pendones, vinilos, retablos, lonas y avisos',
     color: '#d97706',
+    tiempoEstimado: 'Estándar'
+  },
+  D: {
+    id: 'D',
+    nombre: 'Plotter CAD',
+    emoji: '📐',
+    desc: 'Impresión, copias y escáner de planos arquitectónicos e ingeniería',
+    color: '#0891b2',
     tiempoEstimado: 'Estándar'
   },
   C: {
     id: 'C',
-    nombre: 'Diseño / Ajustes',
+    nombre: 'Ajustes',
     emoji: '🎨',
-    desc: 'Modificación de archivos o vectores (un poco más lento)',
+    desc: 'Modificación rápida de archivos, medidas o vectores',
     color: '#6366f1',
     tiempoEstimado: 'Un poco más lento'
-  },
-  P: {
-    id: 'P',
-    nombre: 'Atención Prioritaria',
-    emoji: '🧓',
-    desc: 'Clientes mayores de edad, embarazo o movilidad reducida',
-    color: '#e13032',
-    prioridad: true,
-    tiempoEstimado: 'Prioritario'
   },
   T: {
     id: 'T',
     nombre: 'Terminados',
     emoji: '📚',
-    desc: 'Encuadernación, anillados, plastificado y acabados',
+    desc: 'Encuadernación, anillados, plastificado y laminados',
     color: '#059669',
     tiempoEstimado: 'Estándar'
+  },
+  O: {
+    id: 'O',
+    nombre: 'Otros Servicios',
+    emoji: '✨',
+    desc: 'MDF, sellos de cera, botones publicitarios, corte láser y más',
+    color: '#8b5cf6',
+    tiempoEstimado: 'Personalizado'
   }
 };
 
 let turnos = [];
-let contadores = { A: 1, B: 1, C: 1, P: 1, T: 1 };
+let contadores = { P: 1, A: 1, B: 1, D: 1, C: 1, T: 1, O: 1 };
 let turnoActual = null; // Último turno llamado en general
 let totalModulos = 5; // Módulos activos para trabajar (1 a 5)
 let modulosConfigurados = false; // Requiere que el operario confirme cuántos módulos van a trabajar
@@ -150,9 +166,10 @@ io.on('connection', (socket) => {
   // Cliente u Operario solicita un turno
   socket.on('solicitar_turno', (datos) => {
     const prefijo = datos.categoria && SERVICIOS[datos.categoria] ? datos.categoria : 'A';
+    if (!contadores[prefijo]) contadores[prefijo] = 1;
     const numero = contadores[prefijo]++;
     const codigo = `${prefijo}-${String(numero).padStart(2, '0')}`;
-    const infoServicio = SERVICIOS[prefijo];
+    const infoServicio = SERVICIOS[prefijo] || SERVICIOS['A'];
     const timestamp = Date.now();
 
     const nuevoTurno = {

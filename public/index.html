@@ -103,7 +103,7 @@
 <body class="text-white min-h-screen flex flex-col justify-between p-4 sm:p-8 select-none">
 
   <!-- Header Tótem -->
-  <header class="w-full max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between pb-6 border-b border-slate-700/60 gap-4">
+  <header class="w-full max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between pb-6 border-b border-slate-700/60 gap-4">
     <div class="flex items-center gap-4">
       <div class="bg-white/95 px-4 py-2 rounded-2xl shadow-md border border-slate-300/30">
         <img src="/logo-anillando.png" alt="Anillando Cali" class="h-10 sm:h-12 w-auto object-contain">
@@ -129,9 +129,9 @@
   </header>
 
   <!-- PANTALLA 1: Selección de Servicios -->
-  <main id="pantalla-seleccion" class="w-full max-w-4xl mx-auto my-auto py-6">
+  <main id="pantalla-seleccion" class="w-full max-w-5xl mx-auto my-auto py-6">
     <div class="text-center mb-8">
-      <h2 class="text-2xl sm:text-4xl font-extrabold text-white mb-3">
+      <h2 class="text-2xl sm:text-4xl font-extrabold text-white mb-2">
         ¡Bienvenido! Selecciona tu servicio
       </h2>
       <p class="text-slate-400 text-sm sm:text-base max-w-xl mx-auto">
@@ -139,18 +139,44 @@
       </p>
     </div>
 
-    <!-- Cuadrícula de 5 Servicios -->
+    <!-- Cuadrícula de Servicios: Atención Prioritaria de primero, luego el resto -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
 
-      <!-- 1. Impresión Rápida -->
+      <!-- 1. Atención Prioritaria (DE PRIMERO Y DESTACADO) -->
+      <button onclick="pedirTurno('P')" class="bg-gradient-to-br from-[#2D383E] via-[#381B1D] to-[#551619] hover:to-[#6E1C20] border-2 border-[#E13032] rounded-3xl p-6 text-left transition-all duration-200 transform hover:-translate-y-1 hover:shadow-2xl shadow-[#E13032]/20 flex flex-col justify-between group sm:col-span-2 lg:col-span-3">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-4xl sm:text-5xl">🧓</span>
+              <div>
+                <span class="text-xs font-black px-3 py-1 rounded-lg bg-[#E13032] text-white shadow-md inline-block">
+                  TURNO P • PRIORITARIO
+                </span>
+                <h3 class="text-2xl font-black text-white group-hover:text-rose-300 transition">
+                  Atención Prioritaria
+                </h3>
+              </div>
+            </div>
+            <p class="text-sm text-slate-200 font-medium leading-relaxed max-w-2xl">
+              Adultos mayores, mujeres en embarazo, niños de brazos y clientes con movilidad reducida.
+            </p>
+          </div>
+          <div class="self-end sm:self-center px-4 py-2 rounded-xl bg-white/10 text-rose-300 text-sm font-bold flex items-center gap-2">
+            <span>Llamado preferencial</span>
+            <span class="text-xl">➔</span>
+          </div>
+        </div>
+      </button>
+
+      <!-- 2. Impresión Rápida -->
       <button onclick="pedirTurno('A')" class="card-surface hover:bg-[#3B4E59] border-2 rounded-3xl p-6 text-left transition-all duration-200 transform hover:-translate-y-1 hover:shadow-2xl flex flex-col justify-between group">
         <div>
           <div class="flex items-center justify-between mb-3">
             <span class="text-4xl">⚡</span>
             <span class="text-xs font-black px-2.5 py-1 rounded-lg bg-sky-500/20 text-sky-400 border border-sky-500/30">TURNO A</span>
           </div>
-          <h3 class="text-xl font-bold text-white mb-1 group-hover:text-sky-300 transition">Impresión Rápida</h3>
-          <p class="text-xs text-slate-400 leading-relaxed">Trámites rápidos en B/N y color, fotocopias y escaneos de documentos.</p>
+          <h3 class="text-xl font-bold text-white mb-2 group-hover:text-sky-300 transition">Impresión Rápida</h3>
+          <p class="text-sm text-slate-300 leading-relaxed">Trámites rápidos en B/N y color, copias, escaneos e impresiones express.</p>
         </div>
         <div class="mt-4 pt-3 border-t border-slate-700/50 flex items-center justify-between text-xs text-sky-400 font-semibold">
           <span>Atención ágil</span>
@@ -158,68 +184,92 @@
         </div>
       </button>
 
-      <!-- 2. Gran Formato -->
+      <!-- 3. Gran Formato (Con retablos y letra de descripción más grande) -->
       <button onclick="pedirTurno('B')" class="card-surface hover:bg-[#3B4E59] border-2 rounded-3xl p-6 text-left transition-all duration-200 transform hover:-translate-y-1 hover:shadow-2xl flex flex-col justify-between group">
         <div>
           <div class="flex items-center justify-between mb-3">
-            <span class="text-4xl">📐</span>
+            <span class="text-4xl">🖼️</span>
             <span class="text-xs font-black px-2.5 py-1 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30">TURNO B</span>
           </div>
-          <h3 class="text-xl font-bold text-white mb-1 group-hover:text-amber-300 transition">Gran Formato</h3>
-          <p class="text-xs text-slate-400 leading-relaxed">Pendones, vinilos adhesivos, planos arquitectónicos CAD y lonas.</p>
+          <h3 class="text-xl font-bold text-white mb-2 group-hover:text-amber-300 transition">Gran Formato</h3>
+          <p class="text-sm font-medium text-slate-200 leading-relaxed">
+            Pendones, vinilos adhesivos, <strong class="text-[#FFBC7D]">retablos</strong>, lonas publicitarias y avisos exteriores.
+          </p>
         </div>
         <div class="mt-4 pt-3 border-t border-slate-700/50 flex items-center justify-between text-xs text-amber-400 font-semibold">
-          <span>Plotters y planos</span>
+          <span>Plotters y avisos</span>
           <span class="text-lg">➔</span>
         </div>
       </button>
 
-      <!-- 3. Diseño / Ajustes -->
+      <!-- 4. Plotter CAD (Nuevo) -->
+      <button onclick="pedirTurno('D')" class="card-surface hover:bg-[#3B4E59] border-2 rounded-3xl p-6 text-left transition-all duration-200 transform hover:-translate-y-1 hover:shadow-2xl flex flex-col justify-between group">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-4xl">📐</span>
+            <span class="text-xs font-black px-2.5 py-1 rounded-lg bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">TURNO D</span>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-2 group-hover:text-cyan-300 transition">Plotter CAD</h3>
+          <p class="text-sm font-medium text-slate-200 leading-relaxed">
+            Impresión, copias y escáner de planos de arquitectura e ingeniería.
+          </p>
+        </div>
+        <div class="mt-4 pt-3 border-t border-slate-700/50 flex items-center justify-between text-xs text-cyan-400 font-semibold">
+          <span>Planos de arquitectura</span>
+          <span class="text-lg">➔</span>
+        </div>
+      </button>
+
+      <!-- 5. Ajustes (Antes Diseño / Ajustes) -->
       <button onclick="pedirTurno('C')" class="card-surface hover:bg-[#3B4E59] border-2 rounded-3xl p-6 text-left transition-all duration-200 transform hover:-translate-y-1 hover:shadow-2xl flex flex-col justify-between group">
         <div>
           <div class="flex items-center justify-between mb-3">
             <span class="text-4xl">🎨</span>
             <span class="text-xs font-black px-2.5 py-1 rounded-lg bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">TURNO C</span>
           </div>
-          <h3 class="text-xl font-bold text-white mb-1 group-hover:text-indigo-300 transition">Diseño / Ajustes</h3>
-          <p class="text-xs text-slate-400 leading-relaxed">Modificación de archivos, vectores, retoque y diagramación.</p>
+          <h3 class="text-xl font-bold text-white mb-2 group-hover:text-indigo-300 transition">Ajustes</h3>
+          <p class="text-sm text-slate-300 leading-relaxed">
+            Modificación rápida de archivos, medidas o vectores antes de impresión.
+          </p>
         </div>
         <div class="mt-4 pt-3 border-t border-slate-700/50 flex items-center justify-between text-xs text-indigo-400 font-semibold">
-          <span>Un poco más lento</span>
+          <span>Revisión de archivo</span>
           <span class="text-lg">➔</span>
         </div>
       </button>
 
-      <!-- 4. Atención Prioritaria (Destacado) -->
-      <button onclick="pedirTurno('P')" class="bg-gradient-to-br from-[#2D383E] to-[#40181A] hover:to-[#5E1E22] border-2 border-[#E13032]/60 rounded-3xl p-6 text-left transition-all duration-200 transform hover:-translate-y-1 hover:shadow-2xl shadow-[#E13032]/10 flex flex-col justify-between group">
-        <div>
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-4xl">🧓</span>
-            <span class="text-xs font-black px-2.5 py-1 rounded-lg bg-[#E13032] text-white shadow-md">TURNO P • PRIORITARIO</span>
-          </div>
-          <h3 class="text-xl font-black text-white mb-1 group-hover:text-rose-300 transition flex items-center gap-2">
-            Atención Prioritaria
-          </h3>
-          <p class="text-xs text-slate-300 leading-relaxed">Para adultos mayores, mujeres embarazadas o clientes con movilidad reducida.</p>
-        </div>
-        <div class="mt-4 pt-3 border-t border-rose-500/30 flex items-center justify-between text-xs text-rose-300 font-bold">
-          <span>Llamado preferencial</span>
-          <span class="text-lg">➔</span>
-        </div>
-      </button>
-
-      <!-- 5. Terminados -->
-      <button onclick="pedirTurno('T')" class="card-surface hover:bg-[#3B4E59] border-2 rounded-3xl p-6 text-left transition-all duration-200 transform hover:-translate-y-1 hover:shadow-2xl flex flex-col justify-between group sm:col-span-2 lg:col-span-1">
+      <!-- 6. Terminados -->
+      <button onclick="pedirTurno('T')" class="card-surface hover:bg-[#3B4E59] border-2 rounded-3xl p-6 text-left transition-all duration-200 transform hover:-translate-y-1 hover:shadow-2xl flex flex-col justify-between group">
         <div>
           <div class="flex items-center justify-between mb-3">
             <span class="text-4xl">📚</span>
             <span class="text-xs font-black px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">TURNO T</span>
           </div>
-          <h3 class="text-xl font-bold text-white mb-1 group-hover:text-emerald-300 transition">Terminados</h3>
-          <p class="text-xs text-slate-400 leading-relaxed">Encuadernación, anillados, plastificados, laminados y troquelados.</p>
+          <h3 class="text-xl font-bold text-white mb-2 group-hover:text-emerald-300 transition">Terminados</h3>
+          <p class="text-sm text-slate-300 leading-relaxed">
+            Encuadernación, anillados, plastificados, laminados y troquelados.
+          </p>
         </div>
         <div class="mt-4 pt-3 border-t border-slate-700/50 flex items-center justify-between text-xs text-emerald-400 font-semibold">
           <span>Acabados profesionales</span>
+          <span class="text-lg">➔</span>
+        </div>
+      </button>
+
+      <!-- 7. Otros Servicios (Nuevo: MDF, Sellos de cera, botones, corte láser) -->
+      <button onclick="pedirTurno('O')" class="card-surface hover:bg-[#3B4E59] border-2 rounded-3xl p-6 text-left transition-all duration-200 transform hover:-translate-y-1 hover:shadow-2xl flex flex-col justify-between group sm:col-span-2 lg:col-span-1">
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-4xl">✨</span>
+            <span class="text-xs font-black px-2.5 py-1 rounded-lg bg-purple-500/20 text-purple-400 border border-purple-500/30">TURNO O</span>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-2 group-hover:text-purple-300 transition">Otros Servicios</h3>
+          <p class="text-sm font-medium text-slate-200 leading-relaxed">
+            MDF, sellos de cera, botones publicitarios, corte láser y proyectos especiales.
+          </p>
+        </div>
+        <div class="mt-4 pt-3 border-t border-slate-700/50 flex items-center justify-between text-xs text-purple-400 font-semibold">
+          <span>Corte láser y artículos</span>
           <span class="text-lg">➔</span>
         </div>
       </button>
@@ -259,7 +309,7 @@
       </span>
     </div>
 
-    <!-- Instrucciones claras de atención en módulos 1 al 5 -->
+    <!-- Instrucciones -->
     <div class="bg-[#192227] p-4 rounded-2xl border border-slate-700/80 mb-5 text-left space-y-1.5">
       <div class="flex items-center gap-2 text-xs font-bold text-sky-400">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -268,7 +318,7 @@
         <span>Por favor toma asiento</span>
       </div>
       <p class="text-xs text-slate-300 leading-relaxed">
-        Tu turno sonará en la pantalla principal del TV indicándote a cuál módulo debes acercarte.
+        Esté atento al llamado de su turno en la pantalla principal de TV.
       </p>
     </div>
 
@@ -288,7 +338,7 @@
   </main>
 
   <!-- Footer Tótem -->
-  <footer class="w-full max-w-4xl mx-auto pt-6 border-t border-slate-800/80 text-center text-xs text-slate-500">
+  <footer class="w-full max-w-5xl mx-auto pt-6 border-t border-slate-800/80 text-center text-xs text-slate-500">
     <p>© Anillando Cali • Sistema Inteligente de Atención al Cliente</p>
   </footer>
 
@@ -337,7 +387,7 @@
       <!-- Indicaciones al Cliente -->
       <div style="font-size: 9.5px; line-height: 1.4; padding: 0 1mm;">
         <div style="font-weight: 900; margin-bottom: 0.5mm;">POR FAVOR TOME ASIENTO</div>
-        <div>Esté atento al llamado en la pantalla de TV.</div>
+        <div>Esté atento a la pantalla principal del TV.</div>
       </div>
 
       <div class="pos-divider"></div>

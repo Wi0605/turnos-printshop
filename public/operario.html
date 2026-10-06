@@ -283,20 +283,26 @@
         <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
           <h3 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-3">Llamar siguiente de categoría:</h3>
           <div class="grid grid-cols-2 gap-2 text-xs font-bold">
+            <button onclick="llamarSiguienteCategoria('P')" class="p-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 transition text-left flex items-center gap-2 col-span-2">
+              <span>🧓</span> <span>Prioritaria</span>
+            </button>
             <button onclick="llamarSiguienteCategoria('A')" class="p-2.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-200 transition text-left flex items-center gap-2">
               <span>⚡</span> <span>Impresión</span>
             </button>
             <button onclick="llamarSiguienteCategoria('B')" class="p-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 transition text-left flex items-center gap-2">
-              <span>📐</span> <span>Gran Formato</span>
+              <span>🖼️</span> <span>Gran Formato</span>
+            </button>
+            <button onclick="llamarSiguienteCategoria('D')" class="p-2.5 rounded-xl bg-cyan-50 hover:bg-cyan-100 text-cyan-800 border border-cyan-200 transition text-left flex items-center gap-2">
+              <span>📐</span> <span>Plotter CAD</span>
             </button>
             <button onclick="llamarSiguienteCategoria('C')" class="p-2.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200 transition text-left flex items-center gap-2">
-              <span>🎨</span> <span>Diseño</span>
+              <span>🎨</span> <span>Ajustes</span>
             </button>
-            <button onclick="llamarSiguienteCategoria('P')" class="p-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 transition text-left flex items-center gap-2">
-              <span>🧓</span> <span>Prioritaria</span>
+            <button onclick="llamarSiguienteCategoria('T')" class="p-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition text-left flex items-center gap-2">
+              <span>📚</span> <span>Terminados</span>
             </button>
-            <button onclick="llamarSiguienteCategoria('T')" class="p-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition text-left flex items-center gap-2 col-span-2">
-              <span>📚</span> <span>Terminados (Encuadernación, laminado)</span>
+            <button onclick="llamarSiguienteCategoria('O')" class="p-2.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200 transition text-left flex items-center gap-2">
+              <span>✨</span> <span>Otros Serv.</span>
             </button>
           </div>
         </div>
@@ -308,20 +314,26 @@
             <span class="text-[10px] text-slate-400 font-medium">Cliente en mostrador</span>
           </div>
           <div class="flex flex-wrap gap-1.5">
+            <button onclick="crearTurnoOperario('P')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-800 transition">
+              🧓 P (Prioritario)
+            </button>
             <button onclick="crearTurnoOperario('A')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
               ⚡ A (Impresión)
             </button>
             <button onclick="crearTurnoOperario('B')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
-              📐 B (Formato)
+              🖼️ B (Formato)
+            </button>
+            <button onclick="crearTurnoOperario('D')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-cyan-100 hover:bg-cyan-200 text-cyan-800 transition">
+              📐 D (Plotter CAD)
             </button>
             <button onclick="crearTurnoOperario('C')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
-              🎨 C (Diseño)
-            </button>
-            <button onclick="crearTurnoOperario('P')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-800 transition">
-              🧓 P (Prioritario)
+              🎨 C (Ajustes)
             </button>
             <button onclick="crearTurnoOperario('T')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
               📚 T (Terminados)
+            </button>
+            <button onclick="crearTurnoOperario('O')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-purple-100 hover:bg-purple-200 text-purple-800 transition">
+              ✨ O (Otros)
             </button>
           </div>
         </div>
@@ -344,9 +356,11 @@
             <option value="todas">Todas las categorías</option>
             <option value="P">🧓 Solo Prioritarios</option>
             <option value="A">⚡ Impresión Rápida</option>
-            <option value="B">📐 Gran Formato</option>
-            <option value="C">🎨 Diseño / Ajustes</option>
+            <option value="B">🖼️ Gran Formato</option>
+            <option value="D">📐 Plotter CAD</option>
+            <option value="C">🎨 Ajustes</option>
             <option value="T">📚 Terminados</option>
+            <option value="O">✨ Otros Servicios</option>
           </select>
         </div>
 

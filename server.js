@@ -63,6 +63,7 @@ const SERVICIOS = {
 let turnos = [];
 let contadores = { A: 1, B: 1, C: 1, P: 1, T: 1 };
 let turnoActual = null; // Último turno llamado en general
+let totalModulos = 5; // Módulos activos para trabajar (1 a 5)
 let modulos = {
   1: null,
   2: null,
@@ -96,6 +97,7 @@ function emitirEstadoGeneral() {
     turnos,
     turnoActual,
     modulos,
+    totalModulos,
     ultimosTurnos,
     servicios: SERVICIOS
   });
@@ -107,8 +109,21 @@ io.on('connection', (socket) => {
     turnos,
     turnoActual,
     modulos,
+    totalModulos,
     ultimosTurnos,
     servicios: SERVICIOS
+  });
+
+  // Operario configura la cantidad de módulos a trabajar (1 a 5)
+  socket.on('configurar_modulos', (datos = {}) => {
+    const cantidad = Math.max(1, Math.min(5, parseInt(datos.totalModulos, 10) || 5));
+    totalModulos = cantidad;
+    const nuevosModulos = {};
+    for (let i = 1; i <= totalModulos; i++) {
+      nuevosModulos[i] = modulos[i] || null;
+    }
+    modulos = nuevosModulos;
+    emitirEstadoGeneral();
   });
 
   // Cliente u Operario solicita un turno

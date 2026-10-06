@@ -6,21 +6,21 @@ Sistema web en tiempo real para gestión, llamada y visualización de turnos en 
 
 ## 🚀 Características Principales
 
-- **🏢 Soporte Multi-Módulo (1 al 6)**: Permite a los operarios seleccionar el puesto en el que se encuentran (del 1 al 6). El TV anuncia claramente a qué módulo debe acercarse el cliente.
+- **🏢 Soporte Multi-Módulo (1 al 5)**: Permite a los operarios configurar cuántos módulos van a trabajar en el día (de 1 a 5) y seleccionar en cuál se encuentran. El TV anuncia claramente a qué módulo debe acercarse el cliente.
 - **🖥️ Pantalla de TV en Sala (`/tv`)**:
-  - Diseño widescreen optimizado para monitores y televisores (16:9).
+  - Diseño widescreen optimizado para monitores y televisores (16:9) con tipografía gigante visible desde lejos.
   - Número de turno en tamaño gigante con indicador grande del módulo de atención.
   - Alerta visual parpadeante y animación luminosa de llamado.
   - Timbre nativo tipo aeropuerto/banco (Web Audio API sin dependencias externas).
   - Anuncio por voz en español con Web Speech API (*"Turno A 1, pasar al Módulo 3"*).
-  - Tablero en vivo con el estado de los **6 módulos**.
-  - Lista de turnos en espera e historial de últimos llamados.
+  - Tablero en vivo con el estado de los puestos de atención activos (**1 al 5**).
+  - Lista de turnos en espera e historial de últimos llamados con letras ampliadas.
 - **👥 Tótem de Clientes (`/`)**:
   - Pantalla táctil para que los clientes seleccionen su servicio y reciban su código.
   - Indicador preferencial para adultos mayores y prioridad.
   - Retorno automático a pantalla de inicio tras 7 segundos.
 - **💼 Panel de Operario (`/operario`)**:
-  - Selector activo de módulo (1 al 6, guardado en el navegador).
+  - Configuración inicial de cuántos módulos operarán hoy (1 a 5) y selector activo de puesto.
   - Posibilidad de **atender cualquier turno específico** de la fila con un clic.
   - Botón de **Llamar siguiente general** (con prioridad automática para adultos mayores).
   - Botón de **Llamar siguiente por categoría**.

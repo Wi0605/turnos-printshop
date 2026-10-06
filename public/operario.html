@@ -23,7 +23,37 @@
   </style>
 </head>
 <body class="text-slate-800 min-h-screen p-4 sm:p-6">
-<script>window.onload = function() { const m = prompt("¿Cuántos módulos vas a trabajar hoy? (1-6)"); if(m) { /* lógica guardada en localStorage */ localStorage.setItem("modulos_habilitados", m); } }</script>
+
+  <!-- MODAL: Configuración de Módulos a Trabajar Hoy (1 a 5) -->
+  <div id="modal-modulos" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-200 text-center space-y-5 animate-in fade-in duration-200">
+      <div class="w-16 h-16 rounded-2xl bg-[#E13032]/10 text-[#E13032] flex items-center justify-center mx-auto text-3xl shadow-inner">
+        🏢
+      </div>
+      <div>
+        <h2 class="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">
+          ¿Cuántos módulos van a trabajar hoy?
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1">
+          Selecciona la cantidad de puestos que estarán activos (de 1 a 5). Esta configuración se sincronizará automáticamente con la pantalla del TV.
+        </p>
+      </div>
+
+      <!-- Botones de 1 a 5 -->
+      <div class="grid grid-cols-5 gap-2 sm:gap-3 py-2">
+        <button onclick="guardarConfiguracionModulos(1)" class="py-4 rounded-2xl font-black text-xl border-2 border-slate-200 hover:border-[#E13032] hover:bg-rose-50 text-slate-700 hover:text-[#E13032] transition">1</button>
+        <button onclick="guardarConfiguracionModulos(2)" class="py-4 rounded-2xl font-black text-xl border-2 border-slate-200 hover:border-[#E13032] hover:bg-rose-50 text-slate-700 hover:text-[#E13032] transition">2</button>
+        <button onclick="guardarConfiguracionModulos(3)" class="py-4 rounded-2xl font-black text-xl border-2 border-slate-200 hover:border-[#E13032] hover:bg-rose-50 text-slate-700 hover:text-[#E13032] transition">3</button>
+        <button onclick="guardarConfiguracionModulos(4)" class="py-4 rounded-2xl font-black text-xl border-2 border-slate-200 hover:border-[#E13032] hover:bg-rose-50 text-slate-700 hover:text-[#E13032] transition">4</button>
+        <button onclick="guardarConfiguracionModulos(5)" class="py-4 rounded-2xl font-black text-xl border-2 border-[#E13032] bg-rose-50 text-[#E13032] font-black transition">5</button>
+      </div>
+
+      <button onclick="cerrarModalModulos()" class="text-xs font-bold text-slate-400 hover:text-slate-600 transition">
+        Cerrar sin cambios
+      </button>
+    </div>
+  </div>
+
   <div class="max-w-6xl mx-auto space-y-6">
 
     <!-- Header Principal -->
@@ -43,8 +73,12 @@
         </div>
       </div>
 
-      <!-- Accesos Directos a TV y Tótem -->
-      <div class="flex items-center gap-2 self-stretch md:self-auto justify-end">
+      <!-- Botón Configurar Módulos y Accesos Directos a TV y Tótem -->
+      <div class="flex items-center gap-2 self-stretch md:self-auto justify-end flex-wrap">
+        <button onclick="abrirModalModulos()" class="text-xs font-bold px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-xl transition flex items-center gap-1.5 border border-amber-200 shadow-sm" title="Configurar cantidad de módulos activos para hoy">
+          <span>⚙️</span>
+          <span>Puestos Activos: <strong id="lbl-total-modulos-header" class="text-[#E13032] font-black">5</strong></span>
+        </button>
         <a href="/tv" target="_blank" class="text-xs font-bold px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-[#3B4E59] rounded-xl transition flex items-center gap-1.5 border border-slate-200">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -60,38 +94,26 @@
       </div>
     </header>
 
-    <!-- SELECTOR DE MÓDULO (1 al 6) -->
+    <!-- SELECTOR DE MÓDULO (Dinámico según módulos configurados) -->
     <section class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
         <div>
           <h2 class="text-xs font-extrabold uppercase tracking-wider text-slate-400">Selecciona tu Módulo de Atención</h2>
           <p class="text-xs text-slate-500">Los turnos que llames se anunciarán en el TV hacia este puesto:</p>
         </div>
-        <div class="text-xs font-bold text-[#3B4E59] bg-slate-100 px-3 py-1 rounded-lg border border-slate-200">
-          Puesto Actual: <span id="lbl-modulo-actual" class="text-[#E13032] font-black">Módulo 1</span>
+        <div class="flex items-center gap-2">
+          <button onclick="abrirModalModulos()" class="text-xs font-bold text-[#3B4E59] hover:text-[#E13032] underline transition">
+            Cambiar cantidad de módulos
+          </button>
+          <div class="text-xs font-bold text-[#3B4E59] bg-slate-100 px-3 py-1 rounded-lg border border-slate-200">
+            Puesto Actual: <span id="lbl-modulo-actual" class="text-[#E13032] font-black">Módulo 1</span>
+          </div>
         </div>
       </div>
 
-      <!-- Botones Módulo 1 al 6 -->
-      <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-3" id="selector-modulos">
-        <button onclick="seleccionarModulo(1)" id="btn-mod-1" class="btn-modulo py-3 px-2 rounded-xl font-black text-sm transition border-2 text-center">
-          Módulo 1
-        </button>
-        <button onclick="seleccionarModulo(2)" id="btn-mod-2" class="btn-modulo py-3 px-2 rounded-xl font-black text-sm transition border-2 text-center">
-          Módulo 2
-        </button>
-        <button onclick="seleccionarModulo(3)" id="btn-mod-3" class="btn-modulo py-3 px-2 rounded-xl font-black text-sm transition border-2 text-center">
-          Módulo 3
-        </button>
-        <button onclick="seleccionarModulo(4)" id="btn-mod-4" class="btn-modulo py-3 px-2 rounded-xl font-black text-sm transition border-2 text-center">
-          Módulo 4
-        </button>
-        <button onclick="seleccionarModulo(5)" id="btn-mod-5" class="btn-modulo py-3 px-2 rounded-xl font-black text-sm transition border-2 text-center">
-          Módulo 5
-        </button>
-        <button onclick="seleccionarModulo(6)" id="btn-mod-6" class="btn-modulo py-3 px-2 rounded-xl font-black text-sm transition border-2 text-center">
-          Módulo 6
-        </button>
+      <!-- Botones de Módulos (Renderizados dinámicamente) -->
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3" id="selector-modulos">
+        <!-- Generado dinámicamente según totalModulos (1 a 5) -->
       </div>
     </section>
 
@@ -237,40 +259,66 @@
   <script>
     const socket = io();
 
-    // Módulo actual seleccionado por el operario (1 al 6)
+    // Módulo actual seleccionado por este operario
     let moduloActual = parseInt(localStorage.getItem('anillando_modulo_operario'), 10) || 1;
+    let totalModulosActual = 5;
     let turnosCache = [];
     let modulosCache = {};
+
+    // --- GESTIÓN DE CONFIGURACIÓN DE MÓDULOS (1 a 5) ---
+    function abrirModalModulos() {
+      document.getElementById('modal-modulos').classList.remove('hidden');
+    }
+
+    function cerrarModalModulos() {
+      document.getElementById('modal-modulos').classList.add('hidden');
+    }
+
+    function guardarConfiguracionModulos(cantidad) {
+      cantidad = parseInt(cantidad, 10) || 5;
+      socket.emit('configurar_modulos', { totalModulos: cantidad });
+      localStorage.setItem('anillando_modulos_configurados', 'true');
+      cerrarModalModulos();
+    }
+
+    function renderizarSelectorModulos() {
+      const contenedor = document.getElementById('selector-modulos');
+      document.getElementById('lbl-total-modulos-header').innerText = totalModulosActual;
+
+      // Si el módulo del operario excede la cantidad de módulos activos, se reajusta al 1
+      if (moduloActual > totalModulosActual) {
+        moduloActual = 1;
+        localStorage.setItem('anillando_modulo_operario', 1);
+      }
+
+      let html = '';
+      for (let i = 1; i <= totalModulosActual; i++) {
+        const esActivo = (i === moduloActual);
+        const clases = esActivo
+          ? 'btn-modulo py-3 px-2 rounded-xl font-black text-sm transition border-2 text-center bg-[#3B4E59] text-white border-[#3B4E59] shadow-md shadow-slate-400/30'
+          : 'btn-modulo py-3 px-2 rounded-xl font-black text-sm transition border-2 text-center bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200';
+
+        html += `
+          <button onclick="seleccionarModulo(${i})" id="btn-mod-${i}" class="${clases}">
+            Módulo ${i}
+          </button>
+        `;
+      }
+      contenedor.innerHTML = html;
+
+      document.getElementById('lbl-modulo-actual').innerText = `Módulo ${moduloActual}`;
+      document.getElementById('header-modulo-badge').innerText = `Módulo ${moduloActual}`;
+      document.getElementById('titulo-mi-modulo').innerText = `Atendiendo en Módulo ${moduloActual}`;
+    }
 
     function seleccionarModulo(num) {
       moduloActual = num;
       localStorage.setItem('anillando_modulo_operario', num);
-      actualizarEstilosModulo();
+      renderizarSelectorModulos();
       actualizarVistaModulo();
     }
 
-    function actualizarEstilosModulo() {
-      document.getElementById('lbl-modulo-actual').innerText = `Módulo ${moduloActual}`;
-      document.getElementById('header-modulo-badge').innerText = `Módulo ${moduloActual}`;
-      document.getElementById('titulo-mi-modulo').innerText = `Atendiendo en Módulo ${moduloActual}`;
-
-      for (let i = 1; i <= 6; i++) {
-        const btn = document.getElementById(`btn-mod-${i}`);
-        if (i === moduloActual) {
-          btn.className = 'btn-modulo py-3 px-2 rounded-xl font-black text-sm transition border-2 text-center bg-[#3B4E59] text-white border-[#3B4E59] shadow-md shadow-slate-400/30';
-        } else {
-          btn.className = 'btn-modulo py-3 px-2 rounded-xl font-black text-sm transition border-2 text-center bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200';
-        }
-      }
-    }
-
-    // Actualizar caja del turno activo en MI módulo
-    function actualizarVistaModulo() {
-      const box = document.getElementById('box-turno-modulo');
-      const badgeEstado = document.getElementById('badge-estado-modulo');
-      const btnRellamar = document.getElementById('btn-rellamar');
-      const btnCompletar = document.getElementById('btn-completar');
-
+    // --- FORMATEO DE HORAS Y TIEMPOS ---
     function formatearHoraLocal(t) {
       if (!t) return '--';
       const timestamp = t.creadoEn || (typeof t.id === 'number' && t.id > 1700000000000 ? t.id : null);
@@ -392,9 +440,13 @@
     }
 
     // Socket Eventos
-    socket.on('actualizar_estado', ({ turnos, modulos }) => {
+    socket.on('actualizar_estado', ({ turnos, modulos, totalModulos }) => {
       turnosCache = turnos || [];
       modulosCache = modulos || {};
+      if (totalModulos) {
+        totalModulosActual = totalModulos;
+      }
+      renderizarSelectorModulos();
       actualizarVistaModulo();
       renderizarCola();
     });
@@ -428,9 +480,16 @@
       socket.emit('solicitar_turno', { categoria, creadoPor: 'operario' });
     }
 
-    // Inicialización
-    actualizarEstilosModulo();
-    setInterval(renderizarCola, 30000);
+    // Inicialización al cargar la página
+    window.addEventListener('DOMContentLoaded', () => {
+      renderizarSelectorModulos();
+      setInterval(renderizarCola, 30000);
+
+      // Si es la primera vez que abre en el día y no se ha configurado, mostrar modal
+      if (!localStorage.getItem('anillando_modulos_configurados')) {
+        setTimeout(abrirModalModulos, 400);
+      }
+    });
   </script>
 </body>
 </html>

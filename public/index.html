@@ -23,6 +23,81 @@
     .brand-accent-text { color: #E13032; }
     .brand-peach { background-color: #FFBC7D; }
     .card-surface { background-color: #243038; border-color: #34444F; }
+
+    /* Estilos para Impresión de Recibos Térmicos POS (58mm / 80mm) */
+    #seccion-impresion {
+      display: none;
+    }
+
+    @media print {
+      @page {
+        margin: 0;
+        size: 80mm auto;
+      }
+      *, *::before, *::after {
+        box-sizing: border-box;
+      }
+      html, body {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      /* Ocultar interfaz en pantalla */
+      header, footer, #pantalla-seleccion, #pantalla-confirmacion, #btn-toggle-autoprint {
+        display: none !important;
+      }
+      /* Mostrar únicamente el comprobante térmico */
+      #seccion-impresion {
+        display: block !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 72mm !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
+        padding: 4mm 2mm 14mm 2mm !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-family: 'JetBrains Mono', 'Courier New', Courier, monospace !important;
+        text-align: center !important;
+      }
+      .pos-logo {
+        max-width: 48mm !important;
+        height: auto !important;
+        margin: 0 auto 2mm auto !important;
+        display: block !important;
+        filter: grayscale(100%) contrast(180%) !important;
+        -webkit-filter: grayscale(100%) contrast(180%) !important;
+      }
+      .pos-divider {
+        border-top: 1px dashed #000000 !important;
+        margin: 2mm 0 !important;
+        height: 0 !important;
+      }
+      .pos-priority-banner {
+        border: 2px solid #000000 !important;
+        background: #000000 !important;
+        color: #ffffff !important;
+        font-weight: 900 !important;
+        font-size: 11px !important;
+        padding: 1.5mm 0 !important;
+        margin: 2mm 0 !important;
+        letter-spacing: 0.5px !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .pos-numero-box {
+        border: 2px solid #000000 !important;
+        padding: 2.5mm 1mm !important;
+        margin: 2.5mm 0 !important;
+      }
+      .pos-feed-space {
+        height: 14mm !important;
+        display: block !important;
+      }
+    }
   </style>
 </head>
 <body class="text-white min-h-screen flex flex-col justify-between p-4 sm:p-8 select-none">
@@ -41,9 +116,15 @@
         <p class="text-xs sm:text-sm text-slate-400 font-medium">Centro de Impresión, Gran Formato y Acabados</p>
       </div>
     </div>
-    <div class="text-right hidden sm:block">
-      <div id="reloj-totem" class="text-2xl font-bold font-mono-code text-[#FFBC7D]">--:--</div>
-      <div class="text-xs text-slate-400 capitalize" id="fecha-totem">--</div>
+    <div class="flex items-center gap-3">
+      <button id="btn-toggle-autoprint" onclick="toggleAutoPrint()" class="text-xs font-bold px-3 py-1.5 rounded-xl border border-emerald-500/50 bg-emerald-950/60 text-emerald-300 hover:bg-emerald-900/60 transition flex items-center gap-1.5 shadow-sm" title="Activar/Desactivar impresión automática de recibo">
+        <span>🖨️</span>
+        <span id="lbl-autoprint">Impresión: ON</span>
+      </button>
+      <div class="text-right hidden sm:block">
+        <div id="reloj-totem" class="text-2xl font-bold font-mono-code text-[#FFBC7D]">--:--</div>
+        <div class="text-xs text-slate-400 capitalize" id="fecha-totem">--</div>
+      </div>
     </div>
   </header>
 
@@ -147,12 +228,18 @@
   </main>
 
   <!-- PANTALLA 2: Confirmación de Ticket Generado -->
-  <main id="pantalla-confirmacion" class="hidden w-full max-w-md mx-auto my-auto card-surface p-8 sm:p-10 rounded-3xl border-2 border-slate-700 shadow-2xl text-center">
-    <div class="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto mb-4 text-3xl">
+  <main id="pantalla-confirmacion" class="hidden w-full max-w-md mx-auto my-auto card-surface p-7 sm:p-9 rounded-3xl border-2 border-slate-700 shadow-2xl text-center">
+    <div class="w-14 h-14 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto mb-3 text-2xl">
       ✓
     </div>
 
-    <h2 class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Tu número de turno es</h2>
+    <!-- Indicador de impresión automática -->
+    <div id="badge-imprimiendo" class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-950/70 text-emerald-300 border border-emerald-600/50 text-xs font-bold mb-3 animate-pulse">
+      <span>🖨️</span>
+      <span id="txt-imprimiendo">Imprimiendo comprobante de turno...</span>
+    </div>
+
+    <h2 class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Tu número de turno es</h2>
     
     <!-- Código del Turno -->
     <div id="codigo-turno" class="text-7xl sm:text-8xl font-black font-mono-code text-white mb-2 tracking-tight">
@@ -160,13 +247,20 @@
     </div>
 
     <!-- Nombre de Servicio y Emoji -->
-    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-800/80 border border-slate-700 mb-6">
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-800/80 border border-slate-700 mb-3">
       <span id="emoji-turno" class="text-xl">⚡</span>
       <span id="servicio-turno" class="text-sm font-bold text-[#FFBC7D]">--</span>
     </div>
 
-    <!-- Instrucciones claras de atención en módulos 1 al 6 -->
-    <div class="bg-[#192227] p-5 rounded-2xl border border-slate-700/80 mb-6 text-left space-y-2">
+    <!-- Información de espera antes de ti -->
+    <div class="mb-4">
+      <span class="text-xs font-bold text-slate-300 bg-slate-800/70 py-1.5 px-3.5 rounded-xl border border-slate-700 inline-block">
+        Turnos por delante: <strong id="turnos-antes-pantalla" class="text-amber-400 font-mono-code font-black">0</strong>
+      </span>
+    </div>
+
+    <!-- Instrucciones claras de atención en módulos 1 al 5 -->
+    <div class="bg-[#192227] p-4 rounded-2xl border border-slate-700/80 mb-5 text-left space-y-1.5">
       <div class="flex items-center gap-2 text-xs font-bold text-sky-400">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -178,11 +272,19 @@
       </p>
     </div>
 
-    <!-- Botón Entendido -->
-    <button onclick="reiniciar()" class="w-full py-4 bg-[#E13032] hover:bg-rose-600 rounded-2xl font-black text-white text-base shadow-lg shadow-rose-900/30 transition transform active:scale-95">
-      Entendido
+    <!-- Botón Reimprimir Comprobante -->
+    <button onclick="imprimirTicket()" class="w-full mb-2.5 py-3 bg-slate-700/90 hover:bg-slate-600 border border-slate-500/60 rounded-2xl font-black text-white text-xs sm:text-sm shadow-md transition flex items-center justify-center gap-2 active:scale-98">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+      </svg>
+      <span>Reimprimir Comprobante</span>
     </button>
-    <p class="text-[11px] text-slate-500 mt-3">Esta ventana volverá al inicio automáticamente en unos segundos.</p>
+
+    <!-- Botón Entendido / Nuevo Turno -->
+    <button onclick="reiniciar()" class="w-full py-3.5 bg-[#E13032] hover:bg-rose-600 rounded-2xl font-black text-white text-sm sm:text-base shadow-lg shadow-rose-900/30 transition transform active:scale-98">
+      Listo / Nuevo Turno
+    </button>
+    <p class="text-[11px] text-slate-500 mt-2.5">Esta ventana volverá al inicio automáticamente en unos segundos.</p>
   </main>
 
   <!-- Footer Tótem -->
@@ -190,15 +292,123 @@
     <p>© Anillando Cali • Sistema Inteligente de Atención al Cliente</p>
   </footer>
 
+  <!-- COMPROBANTE TÉRMICO PARA IMPRESORA DE RECIBOS (58mm / 80mm) -->
+  <div id="seccion-impresion">
+    <div class="pos-ticket">
+      <!-- Logo centrado -->
+      <img src="/logo-anillando.png" alt="Anillando Cali" class="pos-logo">
+
+      <!-- Encabezado del Comercio -->
+      <div style="font-size: 15px; font-weight: 900; letter-spacing: 0.5px; margin-top: 1mm;">ANILLANDO CALI</div>
+      <div style="font-size: 10px; font-weight: 700; color: #222;">Centro de Impresión y Acabados</div>
+      <div style="font-size: 8.5px; font-style: italic; color: #444; margin-top: 0.5mm;">Donde tus ideas toman forma</div>
+      <div style="font-size: 8.5px; color: #444;">Cali, Colombia</div>
+
+      <div class="pos-divider"></div>
+
+      <!-- Fecha y Hora -->
+      <div style="display: flex; justify-content: space-between; font-size: 9.5px; font-weight: 700; padding: 0 1mm;">
+        <span>FECHA: <strong id="pos-fecha">--/--/----</strong></span>
+        <span>HORA: <strong id="pos-hora">--:-- --</strong></span>
+      </div>
+
+      <div class="pos-divider"></div>
+
+      <!-- Banner de Prioridad (si aplica) -->
+      <div id="pos-banner-prioridad" class="pos-priority-banner" style="display: none;">
+        ★★★ ATENCIÓN PRIORITARIA ★★★
+      </div>
+
+      <!-- Servicio Solicitado -->
+      <div style="margin: 1.5mm 0;">
+        <div style="font-size: 9px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; color: #333;">SERVICIO</div>
+        <div id="pos-servicio" style="font-size: 13px; font-weight: 900; text-transform: uppercase; margin-top: 0.5mm;">IMPRESIÓN RÁPIDA</div>
+      </div>
+
+      <!-- NÚMERO DE TURNO GIGANTE -->
+      <div class="pos-numero-box">
+        <div style="font-size: 9px; font-weight: 800; letter-spacing: 1px; color: #333;">SU TURNO ES</div>
+        <div id="pos-codigo" style="font-size: 40px; font-weight: 900; line-height: 1.05; margin: 1.5mm 0; letter-spacing: 2px;">A-01</div>
+        <div id="pos-espera" style="font-size: 9.5px; font-weight: 700;">Turnos por delante: 0</div>
+      </div>
+
+      <div class="pos-divider"></div>
+
+      <!-- Indicaciones al Cliente -->
+      <div style="font-size: 9px; line-height: 1.35; padding: 0 1mm;">
+        <div style="font-weight: 900; margin-bottom: 0.5mm;">POR FAVOR TOME ASIENTO</div>
+        <div>Esté atento a la pantalla principal del TV.</div>
+        <div>Su turno se llamará en los <strong>Módulos 1 al 5</strong>.</div>
+      </div>
+
+      <div class="pos-divider"></div>
+
+      <!-- Pie del Recibo -->
+      <div style="font-size: 9px; margin-top: 1mm;">
+        <div style="font-weight: 900;">¡GRACIAS POR SU VISITA!</div>
+        <div style="font-size: 8px; color: #555; margin-top: 0.5mm;">Conserve este comprobante hasta ser atendido</div>
+      </div>
+
+      <!-- Avance de papel para corte de guillotina -->
+      <div class="pos-feed-space"></div>
+    </div>
+  </div>
+
   <script>
     const socket = io();
     let autoResetTimer = null;
+    let ultimoTurno = null;
+    let autoPrintHabilitado = localStorage.getItem('anillando_autoprint') !== 'false';
+
+    function actualizarBotonAutoPrint() {
+      const btnLabel = document.getElementById('lbl-autoprint');
+      const btnContainer = document.getElementById('btn-toggle-autoprint');
+      if (autoPrintHabilitado) {
+        btnLabel.innerText = 'Impresión: ON';
+        btnContainer.className = 'text-xs font-bold px-3 py-1.5 rounded-xl border border-emerald-500/50 bg-emerald-950/60 text-emerald-300 hover:bg-emerald-900/60 transition flex items-center gap-1.5 shadow-sm';
+      } else {
+        btnLabel.innerText = 'Impresión: OFF';
+        btnContainer.className = 'text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800/80 text-slate-400 hover:bg-slate-700 transition flex items-center gap-1.5 shadow-sm';
+      }
+    }
+
+    function toggleAutoPrint() {
+      autoPrintHabilitado = !autoPrintHabilitado;
+      localStorage.setItem('anillando_autoprint', autoPrintHabilitado ? 'true' : 'false');
+      actualizarBotonAutoPrint();
+    }
+
+    function llenarTicketImpresion(turno) {
+      document.getElementById('pos-codigo').innerText = turno.codigo;
+      document.getElementById('pos-servicio').innerText = `${turno.emoji ? turno.emoji + ' ' : ''}${turno.servicio}`;
+      document.getElementById('pos-hora').innerText = turno.hora || '--:--';
+      document.getElementById('pos-fecha').innerText = turno.fecha || new Date().toLocaleDateString('es-CO');
+
+      const cantAntes = typeof turno.turnosAntes === 'number' ? turno.turnosAntes : 0;
+      document.getElementById('pos-espera').innerText = (cantAntes === 0) ? '¡Eres el siguiente en turno!' : `Turnos por delante: ${cantAntes}`;
+      document.getElementById('turnos-antes-pantalla').innerText = cantAntes;
+
+      const bannerPrioridad = document.getElementById('pos-banner-prioridad');
+      if (turno.prioridad) {
+        bannerPrioridad.style.display = 'block';
+      } else {
+        bannerPrioridad.style.display = 'none';
+      }
+    }
+
+    function imprimirTicket() {
+      if (!ultimoTurno) return;
+      llenarTicketImpresion(ultimoTurno);
+      window.print();
+    }
 
     function pedirTurno(categoria) {
       socket.emit('solicitar_turno', { categoria, creadoPor: 'cliente' });
     }
 
     socket.on('turno_creado', (turno) => {
+      ultimoTurno = turno;
+
       document.getElementById('pantalla-seleccion').classList.add('hidden');
       document.getElementById('pantalla-confirmacion').classList.remove('hidden');
 
@@ -206,11 +416,33 @@
       document.getElementById('servicio-turno').innerText = turno.servicio;
       document.getElementById('emoji-turno').innerText = turno.emoji || '⚡';
 
+      llenarTicketImpresion(turno);
+
+      const badgeImprimiendo = document.getElementById('badge-imprimiendo');
+      if (autoPrintHabilitado) {
+        badgeImprimiendo.classList.remove('hidden');
+        document.getElementById('txt-imprimiendo').innerText = 'Imprimiendo comprobante de turno...';
+        // Breve retraso para permitir renderizado visual antes de invocar impresión
+        setTimeout(() => {
+          window.print();
+        }, 250);
+      } else {
+        badgeImprimiendo.classList.add('hidden');
+      }
+
       if (autoResetTimer) clearTimeout(autoResetTimer);
       autoResetTimer = setTimeout(() => {
         reiniciar();
-      }, 7000);
+      }, 9000);
     });
+
+    window.onafterprint = () => {
+      // Al terminar de imprimir, reiniciar a los 4 segundos si sigue visible
+      if (autoResetTimer) clearTimeout(autoResetTimer);
+      autoResetTimer = setTimeout(() => {
+        reiniciar();
+      }, 4000);
+    };
 
     function reiniciar() {
       if (autoResetTimer) clearTimeout(autoResetTimer);
@@ -223,6 +455,8 @@
       document.getElementById('reloj-totem').innerText = ahora.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
       document.getElementById('fecha-totem').innerText = ahora.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' });
     }
+
+    actualizarBotonAutoPrint();
     setInterval(actualizarReloj, 1000);
     actualizarReloj();
   </script>

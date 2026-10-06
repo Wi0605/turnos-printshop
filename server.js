@@ -93,6 +93,23 @@ function formatearHora12(date = new Date()) {
   }
 }
 
+function formatearFecha(date = new Date()) {
+  try {
+    return date.toLocaleDateString('es-CO', {
+      timeZone: TIMEZONE,
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  } catch (e) {
+    return date.toLocaleDateString('es-CO', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  }
+}
+
 function emitirEstadoGeneral() {
   io.emit('actualizar_estado', {
     turnos,
@@ -148,6 +165,7 @@ io.on('connection', (socket) => {
       prioridad: !!infoServicio.prioridad,
       creadoEn: timestamp,
       hora: formatearHora12(new Date(timestamp)),
+      fecha: formatearFecha(new Date(timestamp)),
       creadoPor: datos.creadoPor || 'cliente',
       estado: 'espera'
     };
@@ -159,8 +177,10 @@ io.on('connection', (socket) => {
         indexInsert++;
       }
       turnos.splice(indexInsert, 0, nuevoTurno);
+      nuevoTurno.turnosAntes = indexInsert;
     } else {
       turnos.push(nuevoTurno);
+      nuevoTurno.turnosAntes = turnos.length - 1;
     }
 
     socket.emit('turno_creado', nuevoTurno);

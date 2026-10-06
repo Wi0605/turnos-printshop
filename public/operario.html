@@ -20,6 +20,82 @@
     .brand-primary { background-color: #3B4E59; }
     .brand-accent { background-color: #E13032; }
     .brand-dark { background-color: #243038; }
+
+    /* Estilos para Impresión de Recibos Térmicos POS (58mm / 80mm) */
+    #seccion-impresion-operario {
+      display: none;
+    }
+
+    @media print {
+      @page {
+        margin: 0;
+        size: 80mm auto;
+      }
+      *, *::before, *::after {
+        box-sizing: border-box;
+      }
+      html, body {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      body * {
+        visibility: hidden !important;
+      }
+      #seccion-impresion-operario, #seccion-impresion-operario * {
+        visibility: visible !important;
+      }
+      #seccion-impresion-operario {
+        display: block !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 72mm !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
+        padding: 4mm 2mm 14mm 2mm !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-family: 'JetBrains Mono', 'Courier New', Courier, monospace !important;
+        text-align: center !important;
+      }
+      .pos-logo {
+        max-width: 48mm !important;
+        height: auto !important;
+        margin: 0 auto 2mm auto !important;
+        display: block !important;
+        filter: grayscale(100%) contrast(180%) !important;
+        -webkit-filter: grayscale(100%) contrast(180%) !important;
+      }
+      .pos-divider {
+        border-top: 1px dashed #000000 !important;
+        margin: 2mm 0 !important;
+        height: 0 !important;
+      }
+      .pos-priority-banner {
+        border: 2px solid #000000 !important;
+        background: #000000 !important;
+        color: #ffffff !important;
+        font-weight: 900 !important;
+        font-size: 11px !important;
+        padding: 1.5mm 0 !important;
+        margin: 2mm 0 !important;
+        letter-spacing: 0.5px !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .pos-numero-box {
+        border: 2px solid #000000 !important;
+        padding: 2.5mm 1mm !important;
+        margin: 2.5mm 0 !important;
+      }
+      .pos-feed-space {
+        height: 14mm !important;
+        display: block !important;
+      }
+    }
   </style>
 </head>
 <body class="text-slate-800 min-h-screen p-4 sm:p-6">
@@ -175,6 +251,14 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
               </svg>
               🔔 Re-llamar en TV
+            </button>
+
+            <!-- Botón Imprimir Comprobante -->
+            <button id="btn-imprimir-operario" onclick="imprimirTurnoOperario()" class="hidden w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold py-2.5 px-4 rounded-xl border border-slate-300 transition flex items-center justify-center gap-2 text-xs">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+              </svg>
+              🖨️ Imprimir Comprobante
             </button>
 
             <!-- Botón Finalizar -->
@@ -394,6 +478,7 @@
       const box = document.getElementById('box-turno-modulo');
       const badgeEstado = document.getElementById('badge-estado-modulo');
       const btnRellamar = document.getElementById('btn-rellamar');
+      const btnImprimir = document.getElementById('btn-imprimir-operario');
       const btnCompletar = document.getElementById('btn-completar');
 
       const turnoEnMiModulo = modulosCache[moduloActual];
@@ -402,6 +487,7 @@
         badgeEstado.innerText = 'En Atención';
         badgeEstado.className = 'text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200';
         btnRellamar.classList.remove('hidden');
+        btnImprimir.classList.remove('hidden');
         btnCompletar.classList.remove('hidden');
 
         box.innerHTML = `
@@ -417,6 +503,7 @@
         badgeEstado.innerText = 'Libre';
         badgeEstado.className = 'text-[10px] font-black px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600';
         btnRellamar.classList.add('hidden');
+        btnImprimir.classList.add('hidden');
         btnCompletar.classList.add('hidden');
 
         box.innerHTML = `
@@ -475,11 +562,16 @@
               </div>
             </div>
 
-            <!-- Botón para que el operario atienda este turno específico -->
-            <button onclick="llamarTurnoEspecifico(${t.id})" class="px-3.5 py-2 rounded-xl text-xs font-black bg-white hover:bg-[#3B4E59] text-[#3B4E59] hover:text-white border border-slate-300 shadow-sm transition flex items-center gap-1">
-              <span>Atender</span>
-              <span>➔</span>
-            </button>
+            <!-- Acciones de turno: Imprimir comprobante y Atender -->
+            <div class="flex items-center gap-1.5">
+              <button onclick="imprimirTurnoOperarioDesdeCola(${t.id})" title="Imprimir Comprobante de Turno" class="px-2.5 py-2 rounded-xl text-xs font-bold bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 shadow-sm transition flex items-center justify-center">
+                🖨️
+              </button>
+              <button onclick="llamarTurnoEspecifico(${t.id})" class="px-3.5 py-2 rounded-xl text-xs font-black bg-white hover:bg-[#3B4E59] text-[#3B4E59] hover:text-white border border-slate-300 shadow-sm transition flex items-center gap-1">
+                <span>Atender</span>
+                <span>➔</span>
+              </button>
+            </div>
           </div>
         `;
       }).join('');
@@ -550,11 +642,105 @@
       socket.emit('solicitar_turno', { categoria, creadoPor: 'operario' });
     }
 
+    // --- FUNCIONES DE IMPRESIÓN DE COMPROBANTE TÉRMICO ---
+    function llenarTicketImpresionOperario(turno) {
+      document.getElementById('pos-op-codigo').innerText = turno.codigo;
+      document.getElementById('pos-op-servicio').innerText = `${turno.emoji ? turno.emoji + ' ' : ''}${turno.servicio}`;
+      document.getElementById('pos-op-hora').innerText = turno.hora || formatearHoraLocal(turno);
+      document.getElementById('pos-op-fecha').innerText = turno.fecha || new Date().toLocaleDateString('es-CO');
+
+      const cantAntes = typeof turno.turnosAntes === 'number' ? turno.turnosAntes : 0;
+      document.getElementById('pos-op-espera').innerText = (cantAntes === 0) ? 'Atención en mostrador' : `Turnos por delante: ${cantAntes}`;
+
+      const bannerPrioridad = document.getElementById('pos-op-banner-prioridad');
+      if (turno.prioridad) {
+        bannerPrioridad.style.display = 'block';
+      } else {
+        bannerPrioridad.style.display = 'none';
+      }
+    }
+
+    function imprimirTurnoOperario() {
+      const turno = modulosCache[moduloActual];
+      if (!turno) return;
+      llenarTicketImpresionOperario(turno);
+      window.print();
+    }
+
+    function imprimirTurnoOperarioDesdeCola(id) {
+      const turno = turnosCache.find(t => t.id == id);
+      if (!turno) return;
+      llenarTicketImpresionOperario(turno);
+      window.print();
+    }
+
     // Inicialización al cargar la página
     window.addEventListener('DOMContentLoaded', () => {
       renderizarSelectorModulos();
       setInterval(renderizarCola, 30000);
     });
   </script>
+
+  <!-- COMPROBANTE TÉRMICO PARA IMPRESORA DE RECIBOS (58mm / 80mm) -->
+  <div id="seccion-impresion-operario">
+    <div class="pos-ticket">
+      <!-- Logo centrado -->
+      <img src="/logo-anillando.png" alt="Anillando Cali" class="pos-logo">
+
+      <!-- Encabezado del Comercio -->
+      <div style="font-size: 15px; font-weight: 900; letter-spacing: 0.5px; margin-top: 1mm;">ANILLANDO CALI</div>
+      <div style="font-size: 10px; font-weight: 700; color: #222;">Centro de Impresión y Acabados</div>
+      <div style="font-size: 8.5px; font-style: italic; color: #444; margin-top: 0.5mm;">Donde tus ideas toman forma</div>
+      <div style="font-size: 8.5px; color: #444;">Cali, Colombia</div>
+
+      <div class="pos-divider"></div>
+
+      <!-- Fecha y Hora -->
+      <div style="display: flex; justify-content: space-between; font-size: 9.5px; font-weight: 700; padding: 0 1mm;">
+        <span>FECHA: <strong id="pos-op-fecha">--/--/----</strong></span>
+        <span>HORA: <strong id="pos-op-hora">--:-- --</strong></span>
+      </div>
+
+      <div class="pos-divider"></div>
+
+      <!-- Banner de Prioridad (si aplica) -->
+      <div id="pos-op-banner-prioridad" class="pos-priority-banner" style="display: none;">
+        ★★★ ATENCIÓN PRIORITARIA ★★★
+      </div>
+
+      <!-- Servicio Solicitado -->
+      <div style="margin: 1.5mm 0;">
+        <div style="font-size: 9px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; color: #333;">SERVICIO</div>
+        <div id="pos-op-servicio" style="font-size: 13px; font-weight: 900; text-transform: uppercase; margin-top: 0.5mm;">IMPRESIÓN RÁPIDA</div>
+      </div>
+
+      <!-- NÚMERO DE TURNO GIGANTE -->
+      <div class="pos-numero-box">
+        <div style="font-size: 9px; font-weight: 800; letter-spacing: 1px; color: #333;">SU TURNO ES</div>
+        <div id="pos-op-codigo" style="font-size: 40px; font-weight: 900; line-height: 1.05; margin: 1.5mm 0; letter-spacing: 2px;">A-01</div>
+        <div id="pos-op-espera" style="font-size: 9.5px; font-weight: 700;">Atención en mostrador</div>
+      </div>
+
+      <div class="pos-divider"></div>
+
+      <!-- Indicaciones al Cliente -->
+      <div style="font-size: 9px; line-height: 1.35; padding: 0 1mm;">
+        <div style="font-weight: 900; margin-bottom: 0.5mm;">POR FAVOR TOME ASIENTO</div>
+        <div>Esté atento a la pantalla principal del TV.</div>
+        <div>Su turno se llamará en los <strong>Módulos 1 al 5</strong>.</div>
+      </div>
+
+      <div class="pos-divider"></div>
+
+      <!-- Pie del Recibo -->
+      <div style="font-size: 9px; margin-top: 1mm;">
+        <div style="font-weight: 900;">¡GRACIAS POR SU VISITA!</div>
+        <div style="font-size: 8px; color: #555; margin-top: 0.5mm;">Conserve este comprobante hasta ser atendido</div>
+      </div>
+
+      <!-- Avance de papel para corte de guillotina -->
+      <div class="pos-feed-space"></div>
+    </div>
+  </div>
 </body>
 </html>

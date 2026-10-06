@@ -24,32 +24,51 @@
 </head>
 <body class="text-slate-800 min-h-screen p-4 sm:p-6">
 
-  <!-- MODAL: Configuración de Módulos a Trabajar Hoy (1 a 5) -->
-  <div id="modal-modulos" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-200 text-center space-y-5 animate-in fade-in duration-200">
+  <!-- MODAL OBLIGATORIO: Configuración de Módulos a Trabajar Hoy (1 a 5) -->
+  <div id="modal-modulos" class="fixed inset-0 z-50 bg-slate-900/85 backdrop-blur-md flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-slate-200 text-center space-y-5 animate-in fade-in duration-200">
       <div class="w-16 h-16 rounded-2xl bg-[#E13032]/10 text-[#E13032] flex items-center justify-center mx-auto text-3xl shadow-inner">
         🏢
       </div>
       <div>
         <h2 class="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">
-          ¿Cuántos módulos van a trabajar hoy?
+          Configuración de Módulos Activos
         </h2>
-        <p class="text-xs sm:text-sm text-slate-500 mt-1">
-          Selecciona la cantidad de puestos que estarán activos (de 1 a 5). Esta configuración se sincronizará automáticamente con la pantalla del TV.
+        <p class="text-xs sm:text-sm text-slate-600 mt-2 font-medium">
+          Antes de comenzar a llamar turnos, selecciona cuántos módulos estarán disponibles hoy para atender clientes:
         </p>
       </div>
 
       <!-- Botones de 1 a 5 -->
       <div class="grid grid-cols-5 gap-2 sm:gap-3 py-2">
-        <button onclick="guardarConfiguracionModulos(1)" class="py-4 rounded-2xl font-black text-xl border-2 border-slate-200 hover:border-[#E13032] hover:bg-rose-50 text-slate-700 hover:text-[#E13032] transition">1</button>
-        <button onclick="guardarConfiguracionModulos(2)" class="py-4 rounded-2xl font-black text-xl border-2 border-slate-200 hover:border-[#E13032] hover:bg-rose-50 text-slate-700 hover:text-[#E13032] transition">2</button>
-        <button onclick="guardarConfiguracionModulos(3)" class="py-4 rounded-2xl font-black text-xl border-2 border-slate-200 hover:border-[#E13032] hover:bg-rose-50 text-slate-700 hover:text-[#E13032] transition">3</button>
-        <button onclick="guardarConfiguracionModulos(4)" class="py-4 rounded-2xl font-black text-xl border-2 border-slate-200 hover:border-[#E13032] hover:bg-rose-50 text-slate-700 hover:text-[#E13032] transition">4</button>
-        <button onclick="guardarConfiguracionModulos(5)" class="py-4 rounded-2xl font-black text-xl border-2 border-[#E13032] bg-rose-50 text-[#E13032] font-black transition">5</button>
+        <button id="btn-config-mod-1" onclick="guardarConfiguracionModulos(1)" class="py-4 rounded-2xl font-black text-xl border-2 border-slate-200 hover:border-[#E13032] hover:bg-rose-50 text-slate-700 hover:text-[#E13032] transition flex flex-col items-center justify-center">
+          <span>1</span>
+          <span class="text-[10px] font-bold text-slate-400">Puesto</span>
+        </button>
+        <button id="btn-config-mod-2" onclick="guardarConfiguracionModulos(2)" class="py-4 rounded-2xl font-black text-xl border-2 border-slate-200 hover:border-[#E13032] hover:bg-rose-50 text-slate-700 hover:text-[#E13032] transition flex flex-col items-center justify-center">
+          <span>2</span>
+          <span class="text-[10px] font-bold text-slate-400">Puestos</span>
+        </button>
+        <button id="btn-config-mod-3" onclick="guardarConfiguracionModulos(3)" class="py-4 rounded-2xl font-black text-xl border-2 border-slate-200 hover:border-[#E13032] hover:bg-rose-50 text-slate-700 hover:text-[#E13032] transition flex flex-col items-center justify-center">
+          <span>3</span>
+          <span class="text-[10px] font-bold text-slate-400">Puestos</span>
+        </button>
+        <button id="btn-config-mod-4" onclick="guardarConfiguracionModulos(4)" class="py-4 rounded-2xl font-black text-xl border-2 border-slate-200 hover:border-[#E13032] hover:bg-rose-50 text-slate-700 hover:text-[#E13032] transition flex flex-col items-center justify-center">
+          <span>4</span>
+          <span class="text-[10px] font-bold text-slate-400">Puestos</span>
+        </button>
+        <button id="btn-config-mod-5" onclick="guardarConfiguracionModulos(5)" class="py-4 rounded-2xl font-black text-xl border-2 border-[#E13032] bg-rose-50 text-[#E13032] transition flex flex-col items-center justify-center">
+          <span>5</span>
+          <span class="text-[10px] font-bold text-[#E13032]">Puestos</span>
+        </button>
       </div>
 
-      <button onclick="cerrarModalModulos()" class="text-xs font-bold text-slate-400 hover:text-slate-600 transition">
-        Cerrar sin cambios
+      <p class="text-xs text-slate-400">
+        Esta cantidad se actualizará de inmediato tanto en este panel como en la pantalla del TV.
+      </p>
+
+      <button id="btn-cerrar-modal-modulos" onclick="cerrarModalModulos()" class="hidden text-xs font-bold text-slate-400 hover:text-slate-600 transition pt-1">
+        Cerrar sin cambiar
       </button>
     </div>
   </div>
@@ -75,9 +94,9 @@
 
       <!-- Botón Configurar Módulos y Accesos Directos a TV y Tótem -->
       <div class="flex items-center gap-2 self-stretch md:self-auto justify-end flex-wrap">
-        <button onclick="abrirModalModulos()" class="text-xs font-bold px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-xl transition flex items-center gap-1.5 border border-amber-200 shadow-sm" title="Configurar cantidad de módulos activos para hoy">
+        <button onclick="abrirModalModulos(false)" class="text-xs font-bold px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-900 rounded-xl transition flex items-center gap-1.5 border border-amber-200 shadow-sm" title="Modificar cantidad de módulos disponibles">
           <span>⚙️</span>
-          <span>Puestos Activos: <strong id="lbl-total-modulos-header" class="text-[#E13032] font-black">5</strong></span>
+          <span>Puestos Disponibles: <strong id="lbl-total-modulos-header" class="text-[#E13032] font-black">5</strong></span>
         </button>
         <a href="/tv" target="_blank" class="text-xs font-bold px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-[#3B4E59] rounded-xl transition flex items-center gap-1.5 border border-slate-200">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -102,18 +121,18 @@
           <p class="text-xs text-slate-500">Los turnos que llames se anunciarán en el TV hacia este puesto:</p>
         </div>
         <div class="flex items-center gap-2">
-          <button onclick="abrirModalModulos()" class="text-xs font-bold text-[#3B4E59] hover:text-[#E13032] underline transition">
-            Cambiar cantidad de módulos
+          <button onclick="abrirModalModulos(false)" class="text-xs font-bold text-[#3B4E59] hover:text-[#E13032] underline transition">
+            Cambiar puestos disponibles
           </button>
           <div class="text-xs font-bold text-[#3B4E59] bg-slate-100 px-3 py-1 rounded-lg border border-slate-200">
-            Puesto Actual: <span id="lbl-modulo-actual" class="text-[#E13032] font-black">Módulo 1</span>
+            Tu Puesto: <span id="lbl-modulo-actual" class="text-[#E13032] font-black">Módulo 1</span>
           </div>
         </div>
       </div>
 
-      <!-- Botones de Módulos (Renderizados dinámicamente) -->
-      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3" id="selector-modulos">
-        <!-- Generado dinámicamente según totalModulos (1 a 5) -->
+      <!-- Botones de Módulos (Renderizados dinámicamente según cantidad activa) -->
+      <div class="grid gap-2 sm:gap-3" id="selector-modulos">
+        <!-- Generado dinámicamente -->
       </div>
     </section>
 
@@ -259,37 +278,64 @@
   <script>
     const socket = io();
 
-    // Módulo actual seleccionado por este operario
+    // Estado del operador y sistema
     let moduloActual = parseInt(localStorage.getItem('anillando_modulo_operario'), 10) || 1;
     let totalModulosActual = 5;
+    let modulosYaConfigurados = false;
     let turnosCache = [];
     let modulosCache = {};
 
-    // --- GESTIÓN DE CONFIGURACIÓN DE MÓDULOS (1 a 5) ---
-    function abrirModalModulos() {
-      document.getElementById('modal-modulos').classList.remove('hidden');
+    // --- GESTIÓN DE MODAL Y CONFIGURACIÓN (1 a 5) ---
+    function abrirModalModulos(esObligatorio = false) {
+      const modal = document.getElementById('modal-modulos');
+      const btnCerrar = document.getElementById('btn-cerrar-modal-modulos');
+      if (esObligatorio) {
+        btnCerrar.classList.add('hidden');
+      } else {
+        btnCerrar.classList.remove('hidden');
+      }
+
+      // Resaltar visualmente el botón con la cantidad actual
+      for (let i = 1; i <= 5; i++) {
+        const btn = document.getElementById(`btn-config-mod-${i}`);
+        if (btn) {
+          if (i === totalModulosActual) {
+            btn.className = 'py-4 rounded-2xl font-black text-xl border-2 border-[#E13032] bg-rose-50 text-[#E13032] shadow-sm transition flex flex-col items-center justify-center';
+          } else {
+            btn.className = 'py-4 rounded-2xl font-black text-xl border-2 border-slate-200 hover:border-[#E13032] hover:bg-rose-50 text-slate-700 hover:text-[#E13032] transition flex flex-col items-center justify-center';
+          }
+        }
+      }
+
+      modal.classList.remove('hidden');
     }
 
     function cerrarModalModulos() {
+      if (!modulosYaConfigurados) return;
       document.getElementById('modal-modulos').classList.add('hidden');
     }
 
     function guardarConfiguracionModulos(cantidad) {
-      cantidad = parseInt(cantidad, 10) || 5;
+      cantidad = Math.max(1, Math.min(5, parseInt(cantidad, 10) || 5));
       socket.emit('configurar_modulos', { totalModulos: cantidad });
-      localStorage.setItem('anillando_modulos_configurados', 'true');
-      cerrarModalModulos();
+      modulosYaConfigurados = true;
+      document.getElementById('modal-modulos').classList.add('hidden');
     }
 
     function renderizarSelectorModulos() {
       const contenedor = document.getElementById('selector-modulos');
       document.getElementById('lbl-total-modulos-header').innerText = totalModulosActual;
 
-      // Si el módulo del operario excede la cantidad de módulos activos, se reajusta al 1
+      // Si el módulo del operario excede la cantidad activa, reajustar al módulo 1
       if (moduloActual > totalModulosActual) {
         moduloActual = 1;
         localStorage.setItem('anillando_modulo_operario', 1);
       }
+
+      // Configurar estilo grid dinámico
+      contenedor.style.display = 'grid';
+      contenedor.style.gridTemplateColumns = `repeat(${totalModulosActual}, minmax(0, 1fr))`;
+      contenedor.style.gap = '0.5rem';
 
       let html = '';
       for (let i = 1; i <= totalModulosActual; i++) {
@@ -440,35 +486,59 @@
     }
 
     // Socket Eventos
-    socket.on('actualizar_estado', ({ turnos, modulos, totalModulos }) => {
+    socket.on('actualizar_estado', ({ turnos, modulos, totalModulos, modulosConfigurados }) => {
       turnosCache = turnos || [];
       modulosCache = modulos || {};
       if (totalModulos) {
         totalModulosActual = totalModulos;
       }
+      modulosYaConfigurados = !!modulosConfigurados;
+
+      if (!modulosYaConfigurados) {
+        abrirModalModulos(true);
+      } else {
+        document.getElementById('modal-modulos').classList.add('hidden');
+      }
+
       renderizarSelectorModulos();
       actualizarVistaModulo();
       renderizarCola();
+    });
+
+    socket.on('requiere_configuracion_modulos', () => {
+      abrirModalModulos(true);
     });
 
     socket.on('sin_turnos_categoria', ({ categoria }) => {
       alert(`No hay turnos en espera para la categoría seleccionada.`);
     });
 
-    // Acciones del Operario
+    // Acciones del Operario (Con validación previa de configuración)
+    function verificarConfiguracion() {
+      if (!modulosYaConfigurados) {
+        abrirModalModulos(true);
+        return false;
+      }
+      return true;
+    }
+
     function llamarSiguiente() {
+      if (!verificarConfiguracion()) return;
       socket.emit('llamar_siguiente', { modulo: moduloActual });
     }
 
     function llamarSiguienteCategoria(cat) {
+      if (!verificarConfiguracion()) return;
       socket.emit('llamar_siguiente', { modulo: moduloActual, categoria: cat });
     }
 
     function llamarTurnoEspecifico(id) {
+      if (!verificarConfiguracion()) return;
       socket.emit('llamar_especifico', { id, modulo: moduloActual });
     }
 
     function rellamarTurno() {
+      if (!verificarConfiguracion()) return;
       socket.emit('rellamar_turno', { modulo: moduloActual });
     }
 
@@ -484,11 +554,6 @@
     window.addEventListener('DOMContentLoaded', () => {
       renderizarSelectorModulos();
       setInterval(renderizarCola, 30000);
-
-      // Si es la primera vez que abre en el día y no se ha configurado, mostrar modal
-      if (!localStorage.getItem('anillando_modulos_configurados')) {
-        setTimeout(abrirModalModulos, 400);
-      }
     });
   </script>
 </body>

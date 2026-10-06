@@ -411,8 +411,10 @@
       const cantidad = Math.max(1, Math.min(5, parseInt(totalModulos, 10) || 5));
       badgeModulos.innerText = `${cantidad} Módulo${cantidad > 1 ? 's' : ''} en Servicio`;
 
-      // Configurar columnas según cantidad de módulos
-      contenedor.className = `grid grid-cols-${cantidad} gap-3`;
+      // Configurar columnas dinámicamente según cantidad de módulos
+      contenedor.className = 'grid gap-3';
+      contenedor.style.display = 'grid';
+      contenedor.style.gridTemplateColumns = `repeat(${cantidad}, minmax(0, 1fr))`;
 
       let html = '';
       for (let i = 1; i <= cantidad; i++) {

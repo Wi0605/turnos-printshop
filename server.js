@@ -64,6 +64,7 @@ let turnos = [];
 let contadores = { A: 1, B: 1, C: 1, P: 1, T: 1 };
 let turnoActual = null; // Último turno llamado en general
 let totalModulos = 5; // Módulos activos para trabajar (1 a 5)
+let modulosConfigurados = false; // Requiere que el operario confirme cuántos módulos van a trabajar
 let modulos = {
   1: null,
   2: null,
@@ -98,6 +99,7 @@ function emitirEstadoGeneral() {
     turnoActual,
     modulos,
     totalModulos,
+    modulosConfigurados,
     ultimosTurnos,
     servicios: SERVICIOS
   });
@@ -110,6 +112,7 @@ io.on('connection', (socket) => {
     turnoActual,
     modulos,
     totalModulos,
+    modulosConfigurados,
     ultimosTurnos,
     servicios: SERVICIOS
   });
@@ -118,6 +121,7 @@ io.on('connection', (socket) => {
   socket.on('configurar_modulos', (datos = {}) => {
     const cantidad = Math.max(1, Math.min(5, parseInt(datos.totalModulos, 10) || 5));
     totalModulos = cantidad;
+    modulosConfigurados = true;
     const nuevosModulos = {};
     for (let i = 1; i <= totalModulos; i++) {
       nuevosModulos[i] = modulos[i] || null;
@@ -165,6 +169,10 @@ io.on('connection', (socket) => {
 
   // Operario llama al siguiente (puede filtrar por categoría opcional o llamar al siguiente general)
   socket.on('llamar_siguiente', (datos = {}) => {
+    if (!modulosConfigurados) {
+      socket.emit('requiere_configuracion_modulos');
+      return;
+    }
     const moduloId = parseInt(datos.modulo, 10) || 1;
     const categoriaFiltro = datos.categoria || null;
 
@@ -206,6 +214,10 @@ io.on('connection', (socket) => {
 
   // Operario escoge y llama un turno específico de la lista
   socket.on('llamar_especifico', (datos = {}) => {
+    if (!modulosConfigurados) {
+      socket.emit('requiere_configuracion_modulos');
+      return;
+    }
     const turnoId = datos.id;
     const moduloId = parseInt(datos.modulo, 10) || 1;
 

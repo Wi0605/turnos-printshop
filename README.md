@@ -34,7 +34,7 @@ Sistema web en tiempo real para gestión, llamada y visualización de turnos en 
 
 | Prefijo | Emoji | Servicio | Descripción | Prioridad |
 | :---: | :---: | :--- | :--- | :---: |
-| **A** | ⚡ | **Impresión Rápida** | Trámites rápidos en B/N y color, copias, escaneos | Estándar |
+| **A** | ⚡ | **Copias e Impresión Rápida** | Trámites rápidos en B/N y color, copias, escaneos | Estándar |
 | **B** | 📐 | **Gran Formato** | Pendones, vinilos, planos CAD, lonas | Estándar |
 | **C** | 🎨 | **Diseño / Ajustes** | Modificación de archivos o vectores (un poco más lento) | Estándar |
 | **P** | 🧓 | **Atención Prioritaria** | Clientes mayores de edad, embarazo o movilidad reducida | **ALTA** |

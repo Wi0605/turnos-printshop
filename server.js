@@ -28,7 +28,7 @@ const SERVICIOS = {
   },
   A: {
     id: 'A',
-    nombre: 'Impresión Rápida',
+    nombre: 'Copias e Impresión Rápida',
     emoji: '⚡',
     desc: 'Trámites rápidos en B/N y color, copias, escaneos',
     color: '#0284c7',
